@@ -1,0 +1,1566 @@
+
+
+
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      <link rel="shortcut icon" href="assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-5.5.14">
+    
+    
+      
+        <title>20天吃掉那只Pytorch</title>
+      
+    
+    
+      <link rel="stylesheet" href="assets/stylesheets/main.d3202873.min.css">
+      
+      
+    
+    
+    
+      
+        <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
+        <style>body,input{font-family:"Roboto",-apple-system,BlinkMacSystemFont,Helvetica,Arial,sans-serif}code,kbd,pre{font-family:"Roboto Mono",SFMono-Regular,Consolas,Menlo,monospace}</style>
+      
+    
+    
+    
+    
+      
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#how-to-eat-pytorch-in-20-days-" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <header class="md-header" data-md-component="header">
+  <nav class="md-header-nav md-grid" aria-label="Header">
+    <a href="." title="20天吃掉那只Pytorch" class="md-header-nav__button md-logo" aria-label="20天吃掉那只Pytorch">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 003-3 3 3 0 00-3-3 3 3 0 00-3 3 3 3 0 003 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    <label class="md-header-nav__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+    </label>
+    <div class="md-header-nav__title" data-md-component="header-title">
+      
+        <div class="md-header-nav__ellipsis">
+          <span class="md-header-nav__topic md-ellipsis">
+            20天吃掉那只Pytorch
+          </span>
+          <span class="md-header-nav__topic md-ellipsis">
+            
+              How to eat Pytorch in 20 days ?🔥🔥
+            
+          </span>
+        </div>
+      
+    </div>
+    
+      <label class="md-header-nav__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0116 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 019.5 16 6.5 6.5 0 013 9.5 6.5 6.5 0 019.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+      </label>
+      
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="搜索" placeholder="搜索" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" data-md-state="active">
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0116 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 019.5 16 6.5 6.5 0 013 9.5 6.5 6.5 0 019.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </label>
+      <button type="reset" class="md-search__icon md-icon" aria-label="Clear" data-md-component="search-reset" tabindex="-1">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header-nav__source">
+        
+<a href="https://github.com/lyhue1991/eat_pytorch_in_20_days/" title="前往 GitHub 仓库" class="md-source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M439.55 236.05L244 40.45a28.87 28.87 0 00-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 01-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 000 40.81l195.61 195.6a28.86 28.86 0 0040.8 0l194.69-194.69a28.86 28.86 0 000-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+        
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              <div class="md-sidebar md-sidebar--primary" data-md-component="navigation">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="." title="20天吃掉那只Pytorch" class="md-nav__button md-logo" aria-label="20天吃掉那只Pytorch">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 003-3 3 3 0 00-3-3 3 3 0 00-3 3 3 3 0 003 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    20天吃掉那只Pytorch
+  </label>
+  
+    <div class="md-nav__source">
+      
+<a href="https://github.com/lyhue1991/eat_pytorch_in_20_days/" title="前往 GitHub 仓库" class="md-source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M439.55 236.05L244 40.45a28.87 28.87 0 00-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 01-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 000 40.81l195.61 195.6a28.86 28.86 0 0040.8 0l194.69-194.69a28.86 28.86 0 000-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+
+
+  <li class="md-nav__item md-nav__item--active">
+    
+    <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+    
+      
+    
+    
+      <label class="md-nav__link md-nav__link--active" for="__toc">
+        How to eat Pytorch in 20 days ?🔥🔥
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+    
+    <a href="." title="How to eat Pytorch in 20 days ?🔥🔥" class="md-nav__link md-nav__link--active">
+      How to eat Pytorch in 20 days ?🔥🔥
+    </a>
+    
+      
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#一-pytorch--or-tensorflow2-" class="md-nav__link">
+    一， Pytorch🔥  or TensorFlow2 🍎
+  </a>
+  
+    <nav class="md-nav" aria-label="一， Pytorch🔥  or TensorFlow2 🍎">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#30天吃掉那只tensorflow2httpsgithubcomlyhue1991eat_tensorflow2_in_30_days" class="md-nav__link">
+    🍊《30天吃掉那只TensorFlow2》：https://github.com/lyhue1991/eat_tensorflow2_in_30_days
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#二本书面向读者-" class="md-nav__link">
+    二，本书📖面向读者 👼
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#三本书写作风格-" class="md-nav__link">
+    三，本书写作风格 🍉
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#四本书学习方案-" class="md-nav__link">
+    四，本书学习方案 ⏰
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#五鼓励和联系作者-" class="md-nav__link">
+    五，鼓励和联系作者 🎈🎈
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1-pytorch--or-tensorflow2-" class="md-nav__link">
+    1. Pytorch🔥  or TensorFlow2 🍎
+  </a>
+  
+    <nav class="md-nav" aria-label="1. Pytorch🔥  or TensorFlow2 🍎">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#-eat-tensorflow2-in-30-days-httpsgithubcomlyhue1991eat_tensorflow2_in_30_days" class="md-nav__link">
+    🍊 "Eat TensorFlow2 in 30 days"： https://github.com/lyhue1991/eat_tensorflow2_in_30_days
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-what-should-you-know-before-reading-this-book-" class="md-nav__link">
+    2. What Should You Know Before Reading This Book? 👼
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-writing-style-of-this-book-" class="md-nav__link">
+    3. Writing style of this book 🍉
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-how-to-use-this-book-" class="md-nav__link">
+    4. How to use this Book? ⏰
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-contact-and-support-the-author-" class="md-nav__link">
+    5. Contact and support the author 🎈🎈
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+    
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-2" type="checkbox" id="nav-2">
+    
+    <label class="md-nav__link" for="nav-2">
+      1.建模流程
+      <span class="md-nav__icon md-icon"></span>
+    </label>
+    <nav class="md-nav" aria-label="1.建模流程" data-md-level="1">
+      <label class="md-nav__title" for="nav-2">
+        <span class="md-nav__icon md-icon"></span>
+        1.建模流程
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="1.%E5%BB%BA%E6%A8%A1%E6%B5%81%E7%A8%8B/" title="一、Pytorch的建模流程" class="md-nav__link">
+      一、Pytorch的建模流程
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="1.%E5%BB%BA%E6%A8%A1%E6%B5%81%E7%A8%8B/1-1%2C%E7%BB%93%E6%9E%84%E5%8C%96%E6%95%B0%E6%8D%AE%E5%BB%BA%E6%A8%A1%E6%B5%81%E7%A8%8B%E8%8C%83%E4%BE%8B/" title="1-1,结构化数据建模流程范例" class="md-nav__link">
+      1-1,结构化数据建模流程范例
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="1.%E5%BB%BA%E6%A8%A1%E6%B5%81%E7%A8%8B/1-2%2C%E5%9B%BE%E7%89%87%E6%95%B0%E6%8D%AE%E5%BB%BA%E6%A8%A1%E6%B5%81%E7%A8%8B%E8%8C%83%E4%BE%8B/" title="1-2,图片数据建模流程范例" class="md-nav__link">
+      1-2,图片数据建模流程范例
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="1.%E5%BB%BA%E6%A8%A1%E6%B5%81%E7%A8%8B/1-3%2C%E6%96%87%E6%9C%AC%E6%95%B0%E6%8D%AE%E5%BB%BA%E6%A8%A1%E6%B5%81%E7%A8%8B%E8%8C%83%E4%BE%8B/" title="1-3,文本数据建模流程范例" class="md-nav__link">
+      1-3,文本数据建模流程范例
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="1.%E5%BB%BA%E6%A8%A1%E6%B5%81%E7%A8%8B/1-4%2C%E6%97%B6%E9%97%B4%E5%BA%8F%E5%88%97%E6%95%B0%E6%8D%AE%E5%BB%BA%E6%A8%A1%E6%B5%81%E7%A8%8B%E8%8C%83%E4%BE%8B/" title="1-4,时间序列数据建模流程范例" class="md-nav__link">
+      1-4,时间序列数据建模流程范例
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-3" type="checkbox" id="nav-3">
+    
+    <label class="md-nav__link" for="nav-3">
+      2.核心概念
+      <span class="md-nav__icon md-icon"></span>
+    </label>
+    <nav class="md-nav" aria-label="2.核心概念" data-md-level="1">
+      <label class="md-nav__title" for="nav-3">
+        <span class="md-nav__icon md-icon"></span>
+        2.核心概念
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="2.%E6%A0%B8%E5%BF%83%E6%A6%82%E5%BF%B5/" title="二、Pytorch的核心概念" class="md-nav__link">
+      二、Pytorch的核心概念
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="2.%E6%A0%B8%E5%BF%83%E6%A6%82%E5%BF%B5/2-1%2C%E5%BC%A0%E9%87%8F%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" title="2-1,张量数据结构" class="md-nav__link">
+      2-1,张量数据结构
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="2.%E6%A0%B8%E5%BF%83%E6%A6%82%E5%BF%B5/2-2%2C%E8%87%AA%E5%8A%A8%E5%BE%AE%E5%88%86%E6%9C%BA%E5%88%B6/" title="2-2,自动微分机制" class="md-nav__link">
+      2-2,自动微分机制
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="2.%E6%A0%B8%E5%BF%83%E6%A6%82%E5%BF%B5/2-3%2C%E5%8A%A8%E6%80%81%E8%AE%A1%E7%AE%97%E5%9B%BE/" title="2-3,动态计算图" class="md-nav__link">
+      2-3,动态计算图
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-4" type="checkbox" id="nav-4">
+    
+    <label class="md-nav__link" for="nav-4">
+      3.层次结构
+      <span class="md-nav__icon md-icon"></span>
+    </label>
+    <nav class="md-nav" aria-label="3.层次结构" data-md-level="1">
+      <label class="md-nav__title" for="nav-4">
+        <span class="md-nav__icon md-icon"></span>
+        3.层次结构
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="3.%E5%B1%82%E6%AC%A1%E7%BB%93%E6%9E%84/" title="三、Pytorch的层次结构" class="md-nav__link">
+      三、Pytorch的层次结构
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="3.%E5%B1%82%E6%AC%A1%E7%BB%93%E6%9E%84/3-1%2C%E4%BD%8E%E9%98%B6API%E7%A4%BA%E8%8C%83/" title="3-1,低阶API示范" class="md-nav__link">
+      3-1,低阶API示范
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="3.%E5%B1%82%E6%AC%A1%E7%BB%93%E6%9E%84/3-2%2C%E4%B8%AD%E9%98%B6API%E7%A4%BA%E8%8C%83/" title="3-2,中阶API示范" class="md-nav__link">
+      3-2,中阶API示范
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="3.%E5%B1%82%E6%AC%A1%E7%BB%93%E6%9E%84/3-3%2C%E9%AB%98%E9%98%B6API%E7%A4%BA%E8%8C%83/" title="3-3,高阶API示范" class="md-nav__link">
+      3-3,高阶API示范
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-5" type="checkbox" id="nav-5">
+    
+    <label class="md-nav__link" for="nav-5">
+      4.低阶API
+      <span class="md-nav__icon md-icon"></span>
+    </label>
+    <nav class="md-nav" aria-label="4.低阶API" data-md-level="1">
+      <label class="md-nav__title" for="nav-5">
+        <span class="md-nav__icon md-icon"></span>
+        4.低阶API
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="4.%E4%BD%8E%E9%98%B6API/" title="四、Pytorch的低阶API" class="md-nav__link">
+      四、Pytorch的低阶API
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="4.%E4%BD%8E%E9%98%B6API/4-1%2C%E5%BC%A0%E9%87%8F%E7%9A%84%E7%BB%93%E6%9E%84%E6%93%8D%E4%BD%9C/" title="4-1,张量的结构操作" class="md-nav__link">
+      4-1,张量的结构操作
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="4.%E4%BD%8E%E9%98%B6API/4-2%2C%E5%BC%A0%E9%87%8F%E7%9A%84%E6%95%B0%E5%AD%A6%E8%BF%90%E7%AE%97/" title="4-2,张量的数学运算" class="md-nav__link">
+      4-2,张量的数学运算
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="4.%E4%BD%8E%E9%98%B6API/4-3%2Cnn.functional%E5%92%8Cnn.Module/" title="4-3,nn.functional 和 nn.Module" class="md-nav__link">
+      4-3,nn.functional 和 nn.Module
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-6" type="checkbox" id="nav-6">
+    
+    <label class="md-nav__link" for="nav-6">
+      5.中阶API
+      <span class="md-nav__icon md-icon"></span>
+    </label>
+    <nav class="md-nav" aria-label="5.中阶API" data-md-level="1">
+      <label class="md-nav__title" for="nav-6">
+        <span class="md-nav__icon md-icon"></span>
+        5.中阶API
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="5.%E4%B8%AD%E9%98%B6API/" title="五、Pytorch的中阶API" class="md-nav__link">
+      五、Pytorch的中阶API
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="5.%E4%B8%AD%E9%98%B6API/5-1%2CDataset%E5%92%8CDataLoader/" title="5-1, Dataset和DataLoader" class="md-nav__link">
+      5-1, Dataset和DataLoader
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="5.%E4%B8%AD%E9%98%B6API/5-2%2C%E6%A8%A1%E5%9E%8B%E5%B1%82/" title="5-2,模型层layers" class="md-nav__link">
+      5-2,模型层layers
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="5.%E4%B8%AD%E9%98%B6API/5-3%2C%E6%8D%9F%E5%A4%B1%E5%87%BD%E6%95%B0/" title="5-5,损失函数losses" class="md-nav__link">
+      5-5,损失函数losses
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="5.%E4%B8%AD%E9%98%B6API/5-4%2CTensorBoard%E5%8F%AF%E8%A7%86%E5%8C%96/" title="5-4,TensorBoard可视化" class="md-nav__link">
+      5-4,TensorBoard可视化
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-7" type="checkbox" id="nav-7">
+    
+    <label class="md-nav__link" for="nav-7">
+      6.高阶API
+      <span class="md-nav__icon md-icon"></span>
+    </label>
+    <nav class="md-nav" aria-label="6.高阶API" data-md-level="1">
+      <label class="md-nav__title" for="nav-7">
+        <span class="md-nav__icon md-icon"></span>
+        6.高阶API
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="6.%E9%AB%98%E9%98%B6API/" title="六、Pytorch的高阶API" class="md-nav__link">
+      六、Pytorch的高阶API
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="6.%E9%AB%98%E9%98%B6API/6-1%2C%E6%9E%84%E5%BB%BA%E6%A8%A1%E5%9E%8B%E7%9A%843%E7%A7%8D%E6%96%B9%E6%B3%95/" title="6-1,构建模型的3种方法" class="md-nav__link">
+      6-1,构建模型的3种方法
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="6.%E9%AB%98%E9%98%B6API/6-2%2C%E8%AE%AD%E7%BB%83%E6%A8%A1%E5%9E%8B%E7%9A%843%E7%A7%8D%E6%96%B9%E6%B3%95/" title="6-2,训练模型的3种方法" class="md-nav__link">
+      6-2,训练模型的3种方法
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="6.%E9%AB%98%E9%98%B6API/6-3%2C%E4%BD%BF%E7%94%A8GPU%E8%AE%AD%E7%BB%83%E6%A8%A1%E5%9E%8B/" title="6-3,使用GPU训练模型" class="md-nav__link">
+      6-3,使用GPU训练模型
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="toc">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#一-pytorch--or-tensorflow2-" class="md-nav__link">
+    一， Pytorch🔥  or TensorFlow2 🍎
+  </a>
+  
+    <nav class="md-nav" aria-label="一， Pytorch🔥  or TensorFlow2 🍎">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#30天吃掉那只tensorflow2httpsgithubcomlyhue1991eat_tensorflow2_in_30_days" class="md-nav__link">
+    🍊《30天吃掉那只TensorFlow2》：https://github.com/lyhue1991/eat_tensorflow2_in_30_days
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#二本书面向读者-" class="md-nav__link">
+    二，本书📖面向读者 👼
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#三本书写作风格-" class="md-nav__link">
+    三，本书写作风格 🍉
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#四本书学习方案-" class="md-nav__link">
+    四，本书学习方案 ⏰
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#五鼓励和联系作者-" class="md-nav__link">
+    五，鼓励和联系作者 🎈🎈
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1-pytorch--or-tensorflow2-" class="md-nav__link">
+    1. Pytorch🔥  or TensorFlow2 🍎
+  </a>
+  
+    <nav class="md-nav" aria-label="1. Pytorch🔥  or TensorFlow2 🍎">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#-eat-tensorflow2-in-30-days-httpsgithubcomlyhue1991eat_tensorflow2_in_30_days" class="md-nav__link">
+    🍊 "Eat TensorFlow2 in 30 days"： https://github.com/lyhue1991/eat_tensorflow2_in_30_days
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-what-should-you-know-before-reading-this-book-" class="md-nav__link">
+    2. What Should You Know Before Reading This Book? 👼
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-writing-style-of-this-book-" class="md-nav__link">
+    3. Writing style of this book 🍉
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-how-to-use-this-book-" class="md-nav__link">
+    4. How to use this Book? ⏰
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-contact-and-support-the-author-" class="md-nav__link">
+    5. Contact and support the author 🎈🎈
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                  <a href="https://github.com/lyhue1991/eat_pytorch_in_20_days/edit/master/docs/index.md" title="编辑此页" class="md-content__button md-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25z"/></svg>
+                  </a>
+                
+                
+                  
+                
+                
+                <h1 id="how-to-eat-pytorch-in-20-days-">How to eat Pytorch in 20 days ?🔥🔥<a class="headerlink" href="#how-to-eat-pytorch-in-20-days-" title="Permanent link">#</a></h1>
+<div class="tabbed-set" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><label for="__tabbed_1_1">中文</label><div class="tabbed-content">
+<p><strong>《20天吃掉那只Pytorch》</strong><br />
+* 🚀 github项目地址: <a href="https://github.com/lyhue1991/eat_pytorch_in_20_days">https://github.com/lyhue1991/eat_pytorch_in_20_days</a><br />
+* 🐳 和鲸专栏地址: <a href="https://www.kesci.com/home/column/5f2ac5d8af3980002cb1bc08">https://www.kesci.com/home/column/5f2ac5d8af3980002cb1bc08</a> 【代码可直接fork后云端运行，无需配置环境】</p>
+<p><strong>《30天吃掉那只TensorFlow2》</strong><br />
+* 🚀 github项目地址: <a href="https://github.com/lyhue1991/eat_tensorflow2_in_30_days">https://github.com/lyhue1991/eat_tensorflow2_in_30_days</a><br />
+* 🐳 和鲸专栏地址: <a href="https://www.kesci.com/home/column/5d8ef3c3037db3002d3aa3a0">https://www.kesci.com/home/column/5d8ef3c3037db3002d3aa3a0</a> 【代码可直接fork后云端运行，无需配置环境】</p>
+<h3 id="一-pytorch--or-tensorflow2-">一， Pytorch🔥  or TensorFlow2 🍎<a class="headerlink" href="#一-pytorch--or-tensorflow2-" title="Permanent link">#</a></h3>
+<p>先说结论:</p>
+<p><strong>如果是工程师，应该优先选TensorFlow2.</strong></p>
+<p><strong>如果是学生或者研究人员，应该优先选择Pytorch.</strong></p>
+<p><strong>如果时间足够，最好TensorFlow2和Pytorch都要学习掌握。</strong></p>
+<p>理由如下：</p>
+<ul>
+<li>
+<p>1，<strong>在工业界最重要的是模型落地，目前国内的大部分互联网企业只支持TensorFlow模型的在线部署，不支持Pytorch。</strong> 并且工业界更加注重的是模型的高可用性，许多时候使用的都是成熟的模型架构，调试需求并不大。</p>
+</li>
+<li>
+<p>2，<strong>研究人员最重要的是快速迭代发表文章，需要尝试一些较新的模型架构。而Pytorch在易用性上相比TensorFlow2有一些优势，更加方便调试。</strong> 并且在2019年以来在学术界占领了大半壁江山，能够找到的相应最新研究成果更多。</p>
+</li>
+<li>
+<p>3，TensorFlow2和Pytorch实际上整体风格已经非常相似了，学会了其中一个，学习另外一个将比较容易。两种框架都掌握的话，能够参考的开源模型案例更多，并且可以方便地在两种框架之间切换。</p>
+</li>
+</ul>
+<p>本书的TensorFlow镜像教程：</p>
+<h4 id="30天吃掉那只tensorflow2httpsgithubcomlyhue1991eat_tensorflow2_in_30_days">🍊《30天吃掉那只TensorFlow2》：<a href="https://github.com/lyhue1991/eat_tensorflow2_in_30_days">https://github.com/lyhue1991/eat_tensorflow2_in_30_days</a><a class="headerlink" href="#30天吃掉那只tensorflow2httpsgithubcomlyhue1991eat_tensorflow2_in_30_days" title="Permanent link">#</a></h4>
+<h3 id="二本书面向读者-">二，本书📖面向读者 👼<a class="headerlink" href="#二本书面向读者-" title="Permanent link">#</a></h3>
+<p><strong>本书假定读者有一定的机器学习和深度学习基础，使用过Keras或TensorFlow或Pytorch搭建训练过简单的模型。</strong></p>
+<p><strong>对于没有任何机器学习和深度学习基础的同学，建议在学习本书时同步参考阅读《Python深度学习》一书的第一部分"深度学习基础"内容。</strong></p>
+<p>《Python深度学习》这本书是Keras之父Francois Chollet所著，该书假定读者无任何机器学习知识，以Keras为工具，</p>
+<p>使用丰富的范例示范深度学习的最佳实践，该书通俗易懂，<strong>全书没有一个数学公式，注重培养读者的深度学习直觉。</strong>。</p>
+<p>《Python深度学习》一书的第一部分的4个章节内容如下，预计读者可以在20小时之内学完。</p>
+<ul>
+<li>
+<p>1，什么是深度学习</p>
+</li>
+<li>
+<p>2，神经网络的数学基础</p>
+</li>
+<li>
+<p>3，神经网络入门</p>
+</li>
+<li>
+<p>4，机器学习基础</p>
+</li>
+</ul>
+<h3 id="三本书写作风格-">三，本书写作风格 🍉<a class="headerlink" href="#三本书写作风格-" title="Permanent link">#</a></h3>
+<p><strong>本书是一本对人类用户极其友善的Pytorch入门工具书，Don't let me think是本书的最高追求。</strong></p>
+<p>本书主要是在参考Pytorch官方文档和函数doc文档基础上整理写成的。</p>
+<p>尽管Pytorch官方文档已经相当简明清晰，但本书在篇章结构和范例选取上做了大量的优化，在用户友好度方面更胜一筹。</p>
+<p>本书按照内容难易程度、读者检索习惯和Pytorch自身的层次结构设计内容，循序渐进，层次清晰，方便按照功能查找相应范例。</p>
+<p>本书在范例设计上尽可能简约化和结构化，增强范例易读性和通用性，大部分代码片段在实践中可即取即用。</p>
+<p><strong>如果说通过学习Pytorch官方文档掌握Pytorch的难度大概是5，那么通过本书学习掌握Pytorch的难度应该大概是2.</strong></p>
+<p>仅以下图对比Pytorch官方文档与本书《20天吃掉那只Pytorch》的差异。</p>
+<p><img alt="" src="data/Pytorch%E5%AE%98%E6%96%B9vs%E5%90%83%E6%8E%89Pytorch.png" /></p>
+<h3 id="四本书学习方案-">四，本书学习方案 ⏰<a class="headerlink" href="#四本书学习方案-" title="Permanent link">#</a></h3>
+<p><strong>1，学习计划</strong></p>
+<p>本书是作者利用工作之余大概3个月写成的，大部分读者应该在20天可以完全学会。</p>
+<p>预计每天花费的学习时间在30分钟到2个小时之间。</p>
+<p>当然，本书也非常适合作为Pytorch的工具手册在工程落地时作为范例库参考。</p>
+<p><strong>点击学习内容蓝色标题即可进入该章节。</strong></p>
+<table>
+<thead>
+<tr>
+<th align="right">日期</th>
+<th align="left">学习内容</th>
+<th align="right">内容难度</th>
+<th align="right">预计学习时间</th>
+<th align="right">更新状态</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="right">&nbsp;</td>
+<td align="left"><a href="./一、Pytorch的建模流程.md"><strong>一、Pytorch的建模流程</strong></a></td>
+<td align="right">⭐️</td>
+<td align="right">0hour</td>
+<td align="right">✅</td>
+</tr>
+<tr>
+<td align="right">day1</td>
+<td align="left"><a href="./1-1,结构化数据建模流程范例.md">1-1,结构化数据建模流程范例</a></td>
+<td align="right">⭐️⭐️⭐️</td>
+<td align="right">1hour</td>
+<td align="right">✅</td>
+</tr>
+<tr>
+<td align="right">day2</td>
+<td align="left"><a href="./1-2,图片数据建模流程范例.md">1-2,图片数据建模流程范例</a></td>
+<td align="right">⭐️⭐️⭐️⭐️</td>
+<td align="right">2hour</td>
+<td align="right">✅</td>
+</tr>
+<tr>
+<td align="right">day3</td>
+<td align="left"><a href="./1-3,文本数据建模流程范例.md">1-3,文本数据建模流程范例</a></td>
+<td align="right">⭐️⭐️⭐️⭐️⭐️</td>
+<td align="right">2hour</td>
+<td align="right">✅</td>
+</tr>
+<tr>
+<td align="right">day4</td>
+<td align="left"><a href="./1-4,时间序列数据建模流程范例.md">1-4,时间序列数据建模流程范例</a></td>
+<td align="right">⭐️⭐️⭐️⭐️⭐️</td>
+<td align="right">2hour</td>
+<td align="right">✅</td>
+</tr>
+<tr>
+<td align="right">&nbsp;</td>
+<td align="left"><a href="./二、Pytorch的核心概念.md"><strong>二、Pytorch的核心概念</strong></a></td>
+<td align="right">⭐️</td>
+<td align="right">0hour</td>
+<td align="right">✅</td>
+</tr>
+<tr>
+<td align="right">day5</td>
+<td align="left"><a href="./2-1,张量数据结构.md">2-1,张量数据结构</a></td>
+<td align="right">⭐️⭐️⭐️⭐️</td>
+<td align="right">1hour</td>
+<td align="right">✅</td>
+</tr>
+<tr>
+<td align="right">day6</td>
+<td align="left"><a href="./2-2,自动微分机制.md">2-2,自动微分机制</a></td>
+<td align="right">⭐️⭐️⭐️</td>
+<td align="right">1hour</td>
+<td align="right">✅</td>
+</tr>
+<tr>
+<td align="right">day7</td>
+<td align="left"><a href="./2-3,动态计算图.md">2-3,动态计算图</a></td>
+<td align="right">⭐️⭐️⭐️⭐️⭐️</td>
+<td align="right">2hour</td>
+<td align="right">✅</td>
+</tr>
+<tr>
+<td align="right">&nbsp;</td>
+<td align="left"><a href="./三、Pytorch的层次结构.md"><strong>三、Pytorch的层次结构</strong></a></td>
+<td align="right">⭐️</td>
+<td align="right">0hour</td>
+<td align="right">✅</td>
+</tr>
+<tr>
+<td align="right">day8</td>
+<td align="left"><a href="./3-1,低阶API示范.md">3-1,低阶API示范</a></td>
+<td align="right">⭐️⭐️⭐️⭐️</td>
+<td align="right">1hour</td>
+<td align="right">✅</td>
+</tr>
+<tr>
+<td align="right">day9</td>
+<td align="left"><a href="./3-2,中阶API示范.md">3-2,中阶API示范</a></td>
+<td align="right">⭐️⭐️⭐️</td>
+<td align="right">1hour</td>
+<td align="right">✅</td>
+</tr>
+<tr>
+<td align="right">day10</td>
+<td align="left"><a href="./3-3,高阶API示范.md">3-3,高阶API示范</a></td>
+<td align="right">⭐️⭐️⭐️</td>
+<td align="right">1hour</td>
+<td align="right">✅</td>
+</tr>
+<tr>
+<td align="right">&nbsp;</td>
+<td align="left"><a href="./四、Pytorch的低阶API.md"><strong>四、Pytorch的低阶API</strong></a></td>
+<td align="right">⭐️</td>
+<td align="right">0hour</td>
+<td align="right">✅</td>
+</tr>
+<tr>
+<td align="right">day11</td>
+<td align="left"><a href="./4-1,张量的结构操作.md">4-1,张量的结构操作</a></td>
+<td align="right">⭐️⭐️⭐️⭐️⭐️</td>
+<td align="right">2hour</td>
+<td align="right">✅</td>
+</tr>
+<tr>
+<td align="right">day12</td>
+<td align="left"><a href="./4-2,张量的数学运算.md">4-2,张量的数学运算</a></td>
+<td align="right">⭐️⭐️⭐️⭐️</td>
+<td align="right">1hour</td>
+<td align="right">✅</td>
+</tr>
+<tr>
+<td align="right">day13</td>
+<td align="left"><a href="./4-3,nn.functional和nn.Module.md">4-3,nn.functional和nn.Module</a></td>
+<td align="right">⭐️⭐️⭐️⭐️</td>
+<td align="right">1hour</td>
+<td align="right">✅</td>
+</tr>
+<tr>
+<td align="right">&nbsp;</td>
+<td align="left"><a href="./五、Pytorch的中阶API.md"><strong>五、Pytorch的中阶API</strong></a></td>
+<td align="right">⭐️</td>
+<td align="right">0hour</td>
+<td align="right">✅</td>
+</tr>
+<tr>
+<td align="right">day14</td>
+<td align="left"><a href="./5-1,Dataset和DataLoader.md">5-1,Dataset和DataLoader</a></td>
+<td align="right">⭐️⭐️⭐️⭐️⭐️</td>
+<td align="right">2hour</td>
+<td align="right">✅</td>
+</tr>
+<tr>
+<td align="right">day15</td>
+<td align="left"><a href="./5-3,模型层.md">5-2,模型层</a></td>
+<td align="right">⭐️⭐️⭐️</td>
+<td align="right">1hour</td>
+<td align="right">✅</td>
+</tr>
+<tr>
+<td align="right">day16</td>
+<td align="left"><a href="./5-4,损失函数.md">5-3,损失函数</a></td>
+<td align="right">⭐️⭐️⭐️</td>
+<td align="right">1hour</td>
+<td align="right">✅</td>
+</tr>
+<tr>
+<td align="right">day17</td>
+<td align="left"><a href="./5-4,TensorBoard可视化.md">5-4,TensorBoard可视化</a></td>
+<td align="right">⭐️⭐️⭐️</td>
+<td align="right">1hour</td>
+<td align="right">✅</td>
+</tr>
+<tr>
+<td align="right">&nbsp;</td>
+<td align="left"><a href="./六、Pytorch的高阶API.md"><strong>六、Pytorch的高阶API</strong></a></td>
+<td align="right">⭐️</td>
+<td align="right">0hour</td>
+<td align="right">✅</td>
+</tr>
+<tr>
+<td align="right">day18</td>
+<td align="left"><a href="./6-1,构建模型的3种方法.md">6-1,构建模型的3种方法</a></td>
+<td align="right">⭐️⭐️⭐️⭐️</td>
+<td align="right">1hour</td>
+<td align="right">✅</td>
+</tr>
+<tr>
+<td align="right">day19</td>
+<td align="left"><a href="./6-2,训练模型的3种方法.md">6-2,训练模型的3种方法</a></td>
+<td align="right">⭐️⭐️⭐️⭐️</td>
+<td align="right">1hour</td>
+<td align="right">✅</td>
+</tr>
+<tr>
+<td align="right">day20</td>
+<td align="left"><a href="./6-3,使用GPU训练模型.md">6-3,使用GPU训练模型</a></td>
+<td align="right">⭐️⭐️⭐️⭐️</td>
+<td align="right">1hour</td>
+<td align="right">✅</td>
+</tr>
+</tbody>
+</table>
+<p><strong>2，学习环境</strong></p>
+<p>本书全部源码在jupyter中编写测试通过，建议通过git克隆到本地，并在jupyter中交互式运行学习。</p>
+<p>为了直接能够在jupyter中打开markdown文件，建议安装jupytext，将markdown转换成ipynb文件。</p>
+<div class="highlight"><pre><span></span><code><span class="c1">#克隆本书源码到本地,使用码云镜像仓库国内下载速度更快</span>
+<span class="c1">#!git clone https://gitee.com/Python_Ai_Road/eat_pytorch_in_20_days</span>
+
+<span class="c1">#建议在jupyter notebook 上安装jupytext，以便能够将本书各章节markdown文件视作ipynb文件运行</span>
+<span class="c1">#!pip install -i https://pypi.tuna.tsinghua.edu.cn/simple -U jupytext</span>
+
+<span class="c1">#建议在jupyter notebook 上安装最新版本pytorch 测试本书中的代码</span>
+<span class="c1">#!pip install -i https://pypi.tuna.tsinghua.edu.cn/simple  -U torch torchvision torchtext torchkeras </span>
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">torch</span> 
+<span class="kn">from</span> <span class="nn">torch</span> <span class="kn">import</span> <span class="n">nn</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;torch version:&quot;</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">__version__</span><span class="p">)</span>
+
+<span class="n">a</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([[</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">]])</span>
+<span class="n">b</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">]])</span>
+<span class="n">c</span> <span class="o">=</span> <span class="n">a</span><span class="nd">@b</span><span class="o">.</span><span class="n">t</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;[[2,1]]@[[-1],[2]] =&quot;</span><span class="p">,</span> <span class="n">c</span><span class="o">.</span><span class="n">item</span><span class="p">())</span>
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code>torch version: 1.5.0
+[[2,1]]@[[-1],[2]] = 0
+</code></pre></div>
+
+<h3 id="五鼓励和联系作者-">五，鼓励和联系作者 🎈🎈<a class="headerlink" href="#五鼓励和联系作者-" title="Permanent link">#</a></h3>
+<p><strong>如果本书对你有所帮助，想鼓励一下作者，记得给本项目加一颗星星star⭐️，并分享给你的朋友们喔😊!</strong> </p>
+<p>如果对本书内容理解上有需要进一步和作者交流的地方，欢迎在公众号"Python与算法之美"下留言。作者时间和精力有限，会酌情予以回复。</p>
+<p>也可以在公众号后台回复关键字：<strong>加群</strong>，加入读者交流群和大家讨论。</p>
+<p><img alt="image.png" src="data/Python%E4%B8%8E%E7%AE%97%E6%B3%95%E4%B9%8B%E7%BE%8Elogo.jpg" /></p>
+</div>
+<input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><label for="__tabbed_1_2">English</label><div class="tabbed-content">
+<p><strong>"Eat Pytorch in 20 Days"</strong><br />
+* 🚀 github project address: <a href="https://github.com/lyhue1991/eat_pytorch_in_20_days">https://github.com/lyhue1991/eat_pytorch_in_20_days</a><br />
+* 🐳 Column address: <a href="https://www.kesci.com/home/column/5f2ac5d8af3980002cb1bc08">https://www.kesci.com/home/column/5f2ac5d8af3980002cb1bc08</a> 【Code can be run directly in the cloud after fork, no need to configure the environment】</p>
+<p><strong>"Eat TensorFlow 2 in 30 Days"</strong><br />
+* 🚀 github project address: <a href="https://github.com/lyhue1991/eat_tensorflow2_in_30_days">https://github.com/lyhue1991/eat_tensorflow2_in_30_days</a><br />
+* 🐳 Column address: <a href="https://www.kesci.com/home/column/5d8ef3c3037db3002d3aa3a0">https://www.kesci.com/home/column/5d8ef3c3037db3002d3aa3a0</a> 【The code can be run directly in the cloud after fork, no need to configure the environment】</p>
+<h3 id="1-pytorch--or-tensorflow2-">1. Pytorch🔥  or TensorFlow2 🍎<a class="headerlink" href="#1-pytorch--or-tensorflow2-" title="Permanent link">#</a></h3>
+<p>Conclusion first:</p>
+<p><strong>If you are an engineer, TensorFlow2 should be preferred.</strong></p>
+<p><strong>If you are a student or researcher, Pytorch should be preferred.</strong></p>
+<p><strong>If there is enough time, it is best to learn and master both TensorFlow2 and Pytorch.</strong></p>
+<p>Why to master both?</p>
+<ul>
+<li>
+<ol>
+<li><strong>The most important thing in the industry is the production of models. At present, most domestic Internet companies only support the online deployment of TensorFlow models, not Pytorch.</strong> And the industry pays more attention to the high availability of the model. Many times, the mature model architectures are used, and the need for debugging is not really large.</li>
+</ol>
+</li>
+<li>
+<ol>
+<li><strong>In research, the most important thing is to publish articles quickly, and they need to try some newer model architectures. Pytorch has some advantages over TensorFlow2 in terms of ease of use and is more convenient for debugging.</strong> Pytorch has occupied more than half of the academic world since 2019 with more cutting-edge research results.</li>
+</ol>
+</li>
+<li>
+<ol>
+<li>TensorFlow2 and Pytorch are actually very similar in overall style. After learning one, it will be easier to learn the other. Mastering both frameworks provides you oppurtunities to contribute to more open source model cases.</li>
+</ol>
+</li>
+</ul>
+<p>For mastering Tensorflow:</p>
+<h4 id="-eat-tensorflow2-in-30-days-httpsgithubcomlyhue1991eat_tensorflow2_in_30_days">🍊 "Eat TensorFlow2 in 30 days"： <a href="https://github.com/lyhue1991/eat_tensorflow2_in_30_days">https://github.com/lyhue1991/eat_tensorflow2_in_30_days</a><a class="headerlink" href="#-eat-tensorflow2-in-30-days-httpsgithubcomlyhue1991eat_tensorflow2_in_30_days" title="Permanent link">#</a></h4>
+<h3 id="2-what-should-you-know-before-reading-this-book-">2. What Should You Know Before Reading This Book? 👼<a class="headerlink" href="#2-what-should-you-know-before-reading-this-book-" title="Permanent link">#</a></h3>
+<p>This book assumes that the reader has a certain foundation of machine learning and deep learning, and has used Keras or TensorFlow or Pytorch to build and train simple models.</p>
+<p>For students who do not have any machine learning and deep learning foundations, it is recommended to read the first part of the book <strong>"Deep Learning with Python"</strong> when studying this book.</p>
+<p>The book <strong>"Deep Learning with Python"</strong> is written by Francois Chollet, the father of Keras. The book assumes that the reader has no machine learning knowledge and uses Keras as a tool. It uses many examples to demonstrate the best practices of deep learning. The book is easy to understand as there is no mathematical formula in the book. The book mainly focuses on cultivating readers' deep learning intuition.</p>
+<p>The contents of the 4 chapters of the first part of the book "Deep Learning for python" are as follows:</p>
+<ol>
+<li>What is deep learning </li>
+<li>The mathematical building blocks of neural networks </li>
+<li>Getting started with Neural Networks </li>
+<li>Fundamentals of Machine learning</li>
+</ol>
+<h3 id="3-writing-style-of-this-book-">3. Writing style of this book 🍉<a class="headerlink" href="#3-writing-style-of-this-book-" title="Permanent link">#</a></h3>
+<p><strong>This book is a Pytorch introductory tool that is extremely friendly to human users. "Don't let the readers think" is the highest pursuit of this book.</strong></p>
+<p>This book is mainly organized and written on the basis of referring to Pytorch official documentation together with its functions.</p>
+<p>Although the official Pytorch documentation is quite concise and clear, this book has made a lot of optimizations in the chapter structure and selection of examples, which is more user-friendly.</p>
+<p>This book is designed in accordance with the difficulty of the content, the reader's search habits and Pytorch's own hierarchical structure. The content is designed step by step, with clear levels, and it is convenient to find corresponding examples according to functions.</p>
+<p>This book is as simple and structured as possible in the design of examples to enhance the legibility and versatility of examples. Most of the code snippets are ready to use in practice.</p>
+<p><strong>If the difficulty of mastering Pytorch by learning the official Pytorch documentation is about 5, then the difficulty of learning to master Pytorch through this book should be about 2.</strong></p>
+<h3 id="4-how-to-use-this-book-">4. How to use this Book? ⏰<a class="headerlink" href="#4-how-to-use-this-book-" title="Permanent link">#</a></h3>
+<p><strong>1. Study Plan</strong></p>
+<p>Number of days required to eat this book: This book was written by the author about 3 months after work, and most readers should be able to learn it in <strong>20 days</strong>.</p>
+<p>How many hours a day should you spend: It is estimated that the study time spent every day is between 30 minutes and 2 hours.</p>
+<p>Note: This book is also very suitable as a reference for Pytorch's tool manual when the project is implemented.</p>
+<p><strong>Click the blue title of the learning content to enter the chapter.</strong></p>
+<table>
+<thead>
+<tr>
+<th align="right">Date</th>
+<th align="left">Contents</th>
+<th align="right">Difficulty</th>
+<th align="right">Est. Time</th>
+<th align="right">Update Status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="right">&nbsp;</td>
+<td align="left"><a href="./一、Pytorch的建模流程.md"><strong>1. Pytorch's modeling process</strong></a></td>
+<td align="right">⭐️</td>
+<td align="right">0hour</td>
+<td align="right">✅</td>
+</tr>
+<tr>
+<td align="right">day1</td>
+<td align="left"><a href="./1-1,结构化数据建模流程范例.md">1-1. Example of structured data modeling process</a></td>
+<td align="right">⭐️⭐️⭐️</td>
+<td align="right">1hour</td>
+<td align="right">✅</td>
+</tr>
+<tr>
+<td align="right">day2</td>
+<td align="left"><a href="./1-2,图片数据建模流程范例.md">1-2. Example of image data modeling process</a></td>
+<td align="right">⭐️⭐️⭐️⭐️</td>
+<td align="right">2hour</td>
+<td align="right">✅</td>
+</tr>
+<tr>
+<td align="right">day3</td>
+<td align="left"><a href="./1-3,文本数据建模流程范例.md">1-3. Example of text data modeling process</a></td>
+<td align="right">⭐️⭐️⭐️⭐️⭐️</td>
+<td align="right">2hour</td>
+<td align="right">✅</td>
+</tr>
+<tr>
+<td align="right">day4</td>
+<td align="left"><a href="./1-4,时间序列数据建模流程范例.md">1-4. Example of time series data modeling process</a></td>
+<td align="right">⭐️⭐️⭐️⭐️⭐️</td>
+<td align="right">2hour</td>
+<td align="right">✅</td>
+</tr>
+<tr>
+<td align="right">&nbsp;</td>
+<td align="left"><a href="./二、Pytorch的核心概念.md"><strong>2. The core concept of Pytorch</strong></a></td>
+<td align="right">⭐️</td>
+<td align="right">0hour</td>
+<td align="right">✅</td>
+</tr>
+<tr>
+<td align="right">day5</td>
+<td align="left"><a href="./2-1,张量数据结构.md">2-1. Tensor data structure</a></td>
+<td align="right">⭐️⭐️⭐️⭐️</td>
+<td align="right">1hour</td>
+<td align="right">✅</td>
+</tr>
+<tr>
+<td align="right">day6</td>
+<td align="left"><a href="./2-2,自动微分机制.md">2-2. Automatic differentiation mechanism</a></td>
+<td align="right">⭐️⭐️⭐️</td>
+<td align="right">1hour</td>
+<td align="right">✅</td>
+</tr>
+<tr>
+<td align="right">day7</td>
+<td align="left"><a href="./2-3,动态计算图.md">2-3. Dynamic calculation diagram</a></td>
+<td align="right">⭐️⭐️⭐️⭐️⭐️</td>
+<td align="right">2hour</td>
+<td align="right">✅</td>
+</tr>
+<tr>
+<td align="right">&nbsp;</td>
+<td align="left"><a href="./三、Pytorch的层次结构.md"><strong>3. The hierarchy of Pytorch</strong></a></td>
+<td align="right">⭐️</td>
+<td align="right">0hour</td>
+<td align="right">✅</td>
+</tr>
+<tr>
+<td align="right">day8</td>
+<td align="left"><a href="./3-1,低阶API示范.md">3-1. Low-level API demonstration</a></td>
+<td align="right">⭐️⭐️⭐️⭐️</td>
+<td align="right">1hour</td>
+<td align="right">✅</td>
+</tr>
+<tr>
+<td align="right">day9</td>
+<td align="left"><a href="./3-2,中阶API示范.md">3-2. Intermediate API demonstration</a></td>
+<td align="right">⭐️⭐️⭐️</td>
+<td align="right">1hour</td>
+<td align="right">✅</td>
+</tr>
+<tr>
+<td align="right">day10</td>
+<td align="left"><a href="./3-3,高阶API示范.md">3-3. High-level API demonstration</a></td>
+<td align="right">⭐️⭐️⭐️</td>
+<td align="right">1hour</td>
+<td align="right">✅</td>
+</tr>
+<tr>
+<td align="right">&nbsp;</td>
+<td align="left"><a href="./四、Pytorch的低阶API.md"><strong>4. Pytorch's low-level API</strong></a></td>
+<td align="right">⭐️</td>
+<td align="right">0hour</td>
+<td align="right">✅</td>
+</tr>
+<tr>
+<td align="right">day11</td>
+<td align="left"><a href="./4-1,张量的结构操作.md">4-1. Tensor structure operation</a></td>
+<td align="right">⭐️⭐️⭐️⭐️⭐️</td>
+<td align="right">2hour</td>
+<td align="right">✅</td>
+</tr>
+<tr>
+<td align="right">day12</td>
+<td align="left"><a href="./4-2,张量的数学运算.md">4-2. Mathematical operations of tensors</a></td>
+<td align="right">⭐️⭐️⭐️⭐️</td>
+<td align="right">1hour</td>
+<td align="right">✅</td>
+</tr>
+<tr>
+<td align="right">day13</td>
+<td align="left"><a href="./4-3,nn.functional和nn.Module.md">4-3. nn.functional and nn.Module</a></td>
+<td align="right">⭐️⭐️⭐️⭐️</td>
+<td align="right">1hour</td>
+<td align="right">✅</td>
+</tr>
+<tr>
+<td align="right">&nbsp;</td>
+<td align="left"><a href="./五、Pytorch的中阶API.md"><strong>5. Pytorch's intermediate-level API</strong></a></td>
+<td align="right">⭐️</td>
+<td align="right">0hour</td>
+<td align="right">✅</td>
+</tr>
+<tr>
+<td align="right">day14</td>
+<td align="left"><a href="./5-1,Dataset和DataLoader.md">5-1. Dataset and DataLoader</a></td>
+<td align="right">⭐️⭐️⭐️⭐️⭐️</td>
+<td align="right">2hour</td>
+<td align="right">✅</td>
+</tr>
+<tr>
+<td align="right">day15</td>
+<td align="left"><a href="./5-3,模型层.md">5-2. Model layer</a></td>
+<td align="right">⭐️⭐️⭐️</td>
+<td align="right">1hour</td>
+<td align="right">✅</td>
+</tr>
+<tr>
+<td align="right">day16</td>
+<td align="left"><a href="./5-4,损失函数.md">5-3. Loss function</a></td>
+<td align="right">⭐️⭐️⭐️</td>
+<td align="right">1hour</td>
+<td align="right">✅</td>
+</tr>
+<tr>
+<td align="right">day17</td>
+<td align="left"><a href="./5-4,TensorBoard可视化.md">5-4. TensorBoard TensorBoard visualization</a></td>
+<td align="right">⭐️⭐️⭐️</td>
+<td align="right">1hour</td>
+<td align="right">✅</td>
+</tr>
+<tr>
+<td align="right">&nbsp;</td>
+<td align="left"><a href="./六、Pytorch的高阶API.md"><strong>6. Pytorch's high-level API</strong></a></td>
+<td align="right">⭐️</td>
+<td align="right">0hour</td>
+<td align="right">✅</td>
+</tr>
+<tr>
+<td align="right">day18</td>
+<td align="left"><a href="./6-1,构建模型的3种方法.md">6-1. 3 ways to build a model</a></td>
+<td align="right">⭐️⭐️⭐️⭐️</td>
+<td align="right">1hour</td>
+<td align="right">✅</td>
+</tr>
+<tr>
+<td align="right">day19</td>
+<td align="left"><a href="./6-2,训练模型的3种方法.md">6-2. 3 ways to train a model</a></td>
+<td align="right">⭐️⭐️⭐️⭐️</td>
+<td align="right">1hour</td>
+<td align="right">✅</td>
+</tr>
+<tr>
+<td align="right">day20</td>
+<td align="left"><a href="./6-3,使用GPU训练模型.md">6-3. Use GPU to train model</a></td>
+<td align="right">⭐️⭐️⭐️⭐️</td>
+<td align="right">1hour</td>
+<td align="right">✅</td>
+</tr>
+</tbody>
+</table>
+<p><strong>2. Learning environment</strong></p>
+<p>All the source code of this book has been written and tested in jupyter. It is recommended to clone to the local through git and run and learn interactively in jupyter.</p>
+<p>In order to directly open the markdown file in jupyter, it is recommended to install jupytext and convert the markdown to an ipynb file.</p>
+<div class="highlight"><pre><span></span><code><span class="c1">#clone the source code of this book to local, use the code cloud mirror warehouse to download faster in china</span>
+
+<span class="c1">#!git clone https://gitee.com/Python_Ai_Road/eat_pytorch_in_20_days</span>
+
+<span class="c1">#it is recommended to install jupytext on jupyter notebook so that the markdown files of each chapter of this book can be run as ipynb files</span>
+<span class="c1">#!pip install -i https://pypi.tuna.tsinghua.edu.cn/simple -U jupytext</span>
+
+<span class="c1">#it is recommended to install the latest version of pytorch on jupyter notebook to test the code in this book</span>
+<span class="c1">#!pip install -i https://pypi.tuna.tsinghua.edu.cn/simple  -U torch torchvision torchtext torchkeras </span>
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">torch</span> 
+<span class="kn">from</span> <span class="nn">torch</span> <span class="kn">import</span> <span class="n">nn</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;torch version:&quot;</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">__version__</span><span class="p">)</span>
+
+<span class="n">a</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([[</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">]])</span>
+<span class="n">b</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">]])</span>
+<span class="n">c</span> <span class="o">=</span> <span class="n">a</span><span class="nd">@b</span><span class="o">.</span><span class="n">t</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;[[2,1]]@[[-1],[2]] =&quot;</span><span class="p">,</span> <span class="n">c</span><span class="o">.</span><span class="n">item</span><span class="p">())</span>
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code>torch version: 1.5.0
+[[2,1]]@[[-1],[2]] = 0
+</code></pre></div>
+
+<h3 id="5-contact-and-support-the-author-">5. Contact and support the author 🎈🎈<a class="headerlink" href="#5-contact-and-support-the-author-" title="Permanent link">#</a></h3>
+<p><strong>If this book is helpful to you and want to encourage the author, remember to add a star⭐️ to this project and share it with your friends😊!</strong> </p>
+<p>If you need to further communicate with the author on the understanding of the content of this book, please leave a message under the public account "The Beauty of Python and Algorithms". The author has limited time and energy and will respond as appropriate.</p>
+<p>You can also reply to keywords in the background of the official account: add group, join the reader exchange group and discuss with you.</p>
+<p><img alt="image.png" src="data/Python%E4%B8%8E%E7%AE%97%E6%B3%95%E4%B9%8B%E7%BE%8Elogo.jpg" /></p>
+</div>
+</div>
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+      </main>
+      
+        
+<footer class="md-footer">
+  
+    <div class="md-footer-nav">
+      <nav class="md-footer-nav__inner md-grid" aria-label="Footer">
+        
+        
+          <a href="1.%E5%BB%BA%E6%A8%A1%E6%B5%81%E7%A8%8B/" title="一、Pytorch的建模流程" class="md-footer-nav__link md-footer-nav__link--next" rel="next">
+            <div class="md-footer-nav__title">
+              <div class="md-ellipsis">
+                <span class="md-footer-nav__direction">
+                  下一页
+                </span>
+                一、Pytorch的建模流程
+              </div>
+            </div>
+            <div class="md-footer-nav__button md-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    </div>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+        Made with
+        <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+          Material for MkDocs
+        </a>
+      </div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    
+      <script src="assets/javascripts/vendor.2d1db4bd.min.js"></script>
+      <script src="assets/javascripts/bundle.6627ddf3.min.js"></script><script id="__lang" type="application/json">{"clipboard.copy": "\u590d\u5236", "clipboard.copied": "\u5df2\u590d\u5236", "search.config.lang": "ja", "search.config.pipeline": "trimmer, stemmer", "search.config.separator": "[\\uff0c\\u3002]+", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c"}</script>
+      
+      <script>
+        app = initialize({
+          base: ".",
+          features: ['navigation.expand'],
+          search: Object.assign({
+            worker: "assets/javascripts/worker/search.5eca75d3.min.js"
+          }, typeof search !== "undefined" && search)
+        })
+      </script>
+      
+    
+  </body>
+</html>

@@ -1,0 +1,1486 @@
+
+
+
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      <link rel="shortcut icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-5.5.14">
+    
+    
+      
+        <title>1-3,文本数据建模流程范例 - 20天吃掉那只Pytorch</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.d3202873.min.css">
+      
+      
+    
+    
+    
+      
+        <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
+        <style>body,input{font-family:"Roboto",-apple-system,BlinkMacSystemFont,Helvetica,Arial,sans-serif}code,kbd,pre{font-family:"Roboto Mono",SFMono-Regular,Consolas,Menlo,monospace}</style>
+      
+    
+    
+    
+    
+      
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#1-3文本数据建模流程范例" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <header class="md-header" data-md-component="header">
+  <nav class="md-header-nav md-grid" aria-label="Header">
+    <a href="../.." title="20天吃掉那只Pytorch" class="md-header-nav__button md-logo" aria-label="20天吃掉那只Pytorch">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 003-3 3 3 0 00-3-3 3 3 0 00-3 3 3 3 0 003 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    <label class="md-header-nav__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+    </label>
+    <div class="md-header-nav__title" data-md-component="header-title">
+      
+        <div class="md-header-nav__ellipsis">
+          <span class="md-header-nav__topic md-ellipsis">
+            20天吃掉那只Pytorch
+          </span>
+          <span class="md-header-nav__topic md-ellipsis">
+            
+              1-3,文本数据建模流程范例
+            
+          </span>
+        </div>
+      
+    </div>
+    
+      <label class="md-header-nav__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0116 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 019.5 16 6.5 6.5 0 013 9.5 6.5 6.5 0 019.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+      </label>
+      
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="搜索" placeholder="搜索" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" data-md-state="active">
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0116 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 019.5 16 6.5 6.5 0 013 9.5 6.5 6.5 0 019.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </label>
+      <button type="reset" class="md-search__icon md-icon" aria-label="Clear" data-md-component="search-reset" tabindex="-1">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header-nav__source">
+        
+<a href="https://github.com/lyhue1991/eat_pytorch_in_20_days/" title="前往 GitHub 仓库" class="md-source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M439.55 236.05L244 40.45a28.87 28.87 0 00-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 01-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 000 40.81l195.61 195.6a28.86 28.86 0 0040.8 0l194.69-194.69a28.86 28.86 0 000-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+        
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              <div class="md-sidebar md-sidebar--primary" data-md-component="navigation">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="20天吃掉那只Pytorch" class="md-nav__button md-logo" aria-label="20天吃掉那只Pytorch">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 003-3 3 3 0 00-3-3 3 3 0 00-3 3 3 3 0 003 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    20天吃掉那只Pytorch
+  </label>
+  
+    <div class="md-nav__source">
+      
+<a href="https://github.com/lyhue1991/eat_pytorch_in_20_days/" title="前往 GitHub 仓库" class="md-source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M439.55 236.05L244 40.45a28.87 28.87 0 00-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 01-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 000 40.81l195.61 195.6a28.86 28.86 0 0040.8 0l194.69-194.69a28.86 28.86 0 000-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../.." title="How to eat Pytorch in 20 days ?🔥🔥" class="md-nav__link">
+      How to eat Pytorch in 20 days ?🔥🔥
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+  
+
+
+  <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-2" type="checkbox" id="nav-2" checked>
+    
+    <label class="md-nav__link" for="nav-2">
+      1.建模流程
+      <span class="md-nav__icon md-icon"></span>
+    </label>
+    <nav class="md-nav" aria-label="1.建模流程" data-md-level="1">
+      <label class="md-nav__title" for="nav-2">
+        <span class="md-nav__icon md-icon"></span>
+        1.建模流程
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../" title="一、Pytorch的建模流程" class="md-nav__link">
+      一、Pytorch的建模流程
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../1-1%2C%E7%BB%93%E6%9E%84%E5%8C%96%E6%95%B0%E6%8D%AE%E5%BB%BA%E6%A8%A1%E6%B5%81%E7%A8%8B%E8%8C%83%E4%BE%8B/" title="1-1,结构化数据建模流程范例" class="md-nav__link">
+      1-1,结构化数据建模流程范例
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../1-2%2C%E5%9B%BE%E7%89%87%E6%95%B0%E6%8D%AE%E5%BB%BA%E6%A8%A1%E6%B5%81%E7%A8%8B%E8%8C%83%E4%BE%8B/" title="1-2,图片数据建模流程范例" class="md-nav__link">
+      1-2,图片数据建模流程范例
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+  
+
+
+  <li class="md-nav__item md-nav__item--active">
+    
+    <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+    
+      
+    
+    
+      <label class="md-nav__link md-nav__link--active" for="__toc">
+        1-3,文本数据建模流程范例
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+    
+    <a href="./" title="1-3,文本数据建模流程范例" class="md-nav__link md-nav__link--active">
+      1-3,文本数据建模流程范例
+    </a>
+    
+      
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#一准备数据" class="md-nav__link">
+    一，准备数据
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#二定义模型" class="md-nav__link">
+    二，定义模型
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#三训练模型" class="md-nav__link">
+    三，训练模型
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#四评估模型" class="md-nav__link">
+    四，评估模型
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#五使用模型" class="md-nav__link">
+    五，使用模型
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#六保存模型" class="md-nav__link">
+    六，保存模型
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+    
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../1-4%2C%E6%97%B6%E9%97%B4%E5%BA%8F%E5%88%97%E6%95%B0%E6%8D%AE%E5%BB%BA%E6%A8%A1%E6%B5%81%E7%A8%8B%E8%8C%83%E4%BE%8B/" title="1-4,时间序列数据建模流程范例" class="md-nav__link">
+      1-4,时间序列数据建模流程范例
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-3" type="checkbox" id="nav-3">
+    
+    <label class="md-nav__link" for="nav-3">
+      2.核心概念
+      <span class="md-nav__icon md-icon"></span>
+    </label>
+    <nav class="md-nav" aria-label="2.核心概念" data-md-level="1">
+      <label class="md-nav__title" for="nav-3">
+        <span class="md-nav__icon md-icon"></span>
+        2.核心概念
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../2.%E6%A0%B8%E5%BF%83%E6%A6%82%E5%BF%B5/" title="二、Pytorch的核心概念" class="md-nav__link">
+      二、Pytorch的核心概念
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../2.%E6%A0%B8%E5%BF%83%E6%A6%82%E5%BF%B5/2-1%2C%E5%BC%A0%E9%87%8F%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" title="2-1,张量数据结构" class="md-nav__link">
+      2-1,张量数据结构
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../2.%E6%A0%B8%E5%BF%83%E6%A6%82%E5%BF%B5/2-2%2C%E8%87%AA%E5%8A%A8%E5%BE%AE%E5%88%86%E6%9C%BA%E5%88%B6/" title="2-2,自动微分机制" class="md-nav__link">
+      2-2,自动微分机制
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../2.%E6%A0%B8%E5%BF%83%E6%A6%82%E5%BF%B5/2-3%2C%E5%8A%A8%E6%80%81%E8%AE%A1%E7%AE%97%E5%9B%BE/" title="2-3,动态计算图" class="md-nav__link">
+      2-3,动态计算图
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-4" type="checkbox" id="nav-4">
+    
+    <label class="md-nav__link" for="nav-4">
+      3.层次结构
+      <span class="md-nav__icon md-icon"></span>
+    </label>
+    <nav class="md-nav" aria-label="3.层次结构" data-md-level="1">
+      <label class="md-nav__title" for="nav-4">
+        <span class="md-nav__icon md-icon"></span>
+        3.层次结构
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../3.%E5%B1%82%E6%AC%A1%E7%BB%93%E6%9E%84/" title="三、Pytorch的层次结构" class="md-nav__link">
+      三、Pytorch的层次结构
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../3.%E5%B1%82%E6%AC%A1%E7%BB%93%E6%9E%84/3-1%2C%E4%BD%8E%E9%98%B6API%E7%A4%BA%E8%8C%83/" title="3-1,低阶API示范" class="md-nav__link">
+      3-1,低阶API示范
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../3.%E5%B1%82%E6%AC%A1%E7%BB%93%E6%9E%84/3-2%2C%E4%B8%AD%E9%98%B6API%E7%A4%BA%E8%8C%83/" title="3-2,中阶API示范" class="md-nav__link">
+      3-2,中阶API示范
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../3.%E5%B1%82%E6%AC%A1%E7%BB%93%E6%9E%84/3-3%2C%E9%AB%98%E9%98%B6API%E7%A4%BA%E8%8C%83/" title="3-3,高阶API示范" class="md-nav__link">
+      3-3,高阶API示范
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-5" type="checkbox" id="nav-5">
+    
+    <label class="md-nav__link" for="nav-5">
+      4.低阶API
+      <span class="md-nav__icon md-icon"></span>
+    </label>
+    <nav class="md-nav" aria-label="4.低阶API" data-md-level="1">
+      <label class="md-nav__title" for="nav-5">
+        <span class="md-nav__icon md-icon"></span>
+        4.低阶API
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../4.%E4%BD%8E%E9%98%B6API/" title="四、Pytorch的低阶API" class="md-nav__link">
+      四、Pytorch的低阶API
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../4.%E4%BD%8E%E9%98%B6API/4-1%2C%E5%BC%A0%E9%87%8F%E7%9A%84%E7%BB%93%E6%9E%84%E6%93%8D%E4%BD%9C/" title="4-1,张量的结构操作" class="md-nav__link">
+      4-1,张量的结构操作
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../4.%E4%BD%8E%E9%98%B6API/4-2%2C%E5%BC%A0%E9%87%8F%E7%9A%84%E6%95%B0%E5%AD%A6%E8%BF%90%E7%AE%97/" title="4-2,张量的数学运算" class="md-nav__link">
+      4-2,张量的数学运算
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../4.%E4%BD%8E%E9%98%B6API/4-3%2Cnn.functional%E5%92%8Cnn.Module/" title="4-3,nn.functional 和 nn.Module" class="md-nav__link">
+      4-3,nn.functional 和 nn.Module
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-6" type="checkbox" id="nav-6">
+    
+    <label class="md-nav__link" for="nav-6">
+      5.中阶API
+      <span class="md-nav__icon md-icon"></span>
+    </label>
+    <nav class="md-nav" aria-label="5.中阶API" data-md-level="1">
+      <label class="md-nav__title" for="nav-6">
+        <span class="md-nav__icon md-icon"></span>
+        5.中阶API
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../5.%E4%B8%AD%E9%98%B6API/" title="五、Pytorch的中阶API" class="md-nav__link">
+      五、Pytorch的中阶API
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../5.%E4%B8%AD%E9%98%B6API/5-1%2CDataset%E5%92%8CDataLoader/" title="5-1, Dataset和DataLoader" class="md-nav__link">
+      5-1, Dataset和DataLoader
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../5.%E4%B8%AD%E9%98%B6API/5-2%2C%E6%A8%A1%E5%9E%8B%E5%B1%82/" title="5-2,模型层layers" class="md-nav__link">
+      5-2,模型层layers
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../5.%E4%B8%AD%E9%98%B6API/5-3%2C%E6%8D%9F%E5%A4%B1%E5%87%BD%E6%95%B0/" title="5-5,损失函数losses" class="md-nav__link">
+      5-5,损失函数losses
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../5.%E4%B8%AD%E9%98%B6API/5-4%2CTensorBoard%E5%8F%AF%E8%A7%86%E5%8C%96/" title="5-4,TensorBoard可视化" class="md-nav__link">
+      5-4,TensorBoard可视化
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-7" type="checkbox" id="nav-7">
+    
+    <label class="md-nav__link" for="nav-7">
+      6.高阶API
+      <span class="md-nav__icon md-icon"></span>
+    </label>
+    <nav class="md-nav" aria-label="6.高阶API" data-md-level="1">
+      <label class="md-nav__title" for="nav-7">
+        <span class="md-nav__icon md-icon"></span>
+        6.高阶API
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../6.%E9%AB%98%E9%98%B6API/" title="六、Pytorch的高阶API" class="md-nav__link">
+      六、Pytorch的高阶API
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../6.%E9%AB%98%E9%98%B6API/6-1%2C%E6%9E%84%E5%BB%BA%E6%A8%A1%E5%9E%8B%E7%9A%843%E7%A7%8D%E6%96%B9%E6%B3%95/" title="6-1,构建模型的3种方法" class="md-nav__link">
+      6-1,构建模型的3种方法
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../6.%E9%AB%98%E9%98%B6API/6-2%2C%E8%AE%AD%E7%BB%83%E6%A8%A1%E5%9E%8B%E7%9A%843%E7%A7%8D%E6%96%B9%E6%B3%95/" title="6-2,训练模型的3种方法" class="md-nav__link">
+      6-2,训练模型的3种方法
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../6.%E9%AB%98%E9%98%B6API/6-3%2C%E4%BD%BF%E7%94%A8GPU%E8%AE%AD%E7%BB%83%E6%A8%A1%E5%9E%8B/" title="6-3,使用GPU训练模型" class="md-nav__link">
+      6-3,使用GPU训练模型
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="toc">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#一准备数据" class="md-nav__link">
+    一，准备数据
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#二定义模型" class="md-nav__link">
+    二，定义模型
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#三训练模型" class="md-nav__link">
+    三，训练模型
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#四评估模型" class="md-nav__link">
+    四，评估模型
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#五使用模型" class="md-nav__link">
+    五，使用模型
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#六保存模型" class="md-nav__link">
+    六，保存模型
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                  <a href="https://github.com/lyhue1991/eat_pytorch_in_20_days/edit/master/docs/1.建模流程/1-3,文本数据建模流程范例.md" title="编辑此页" class="md-content__button md-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25z"/></svg>
+                  </a>
+                
+                
+                  
+                
+                
+                <h1 id="1-3文本数据建模流程范例">1-3,文本数据建模流程范例<a class="headerlink" href="#1-3文本数据建模流程范例" title="Permanent link">#</a></h1>
+<h3 id="一准备数据">一，准备数据<a class="headerlink" href="#一准备数据" title="Permanent link">#</a></h3>
+<p>imdb数据集的目标是根据电影评论的文本内容预测评论的情感标签。</p>
+<p>训练集有20000条电影评论文本，测试集有5000条电影评论文本，其中正面评论和负面评论都各占一半。</p>
+<p>文本数据预处理较为繁琐，包括中文切词（本示例不涉及），构建词典，编码转换，序列填充，构建数据管道等等。</p>
+<p>在torch中预处理文本数据一般使用torchtext或者自定义Dataset，torchtext功能非常强大，可以构建文本分类，序列标注，问答模型，机器翻译等NLP任务的数据集。</p>
+<p>下面仅演示使用它来构建文本分类数据集的方法。</p>
+<p>较完整的教程可以参考以下知乎文章：《pytorch学习笔记—Torchtext》</p>
+<p><a href="https://zhuanlan.zhihu.com/p/65833208">https://zhuanlan.zhihu.com/p/65833208</a></p>
+<p><img alt="" src="../../data/%E7%94%B5%E5%BD%B1%E8%AF%84%E8%AE%BA.jpg" /></p>
+<p>torchtext常见API一览</p>
+<ul>
+<li>torchtext.data.Example : 用来表示一个样本，数据和标签</li>
+<li>torchtext.vocab.Vocab: 词汇表，可以导入一些预训练词向量</li>
+<li>torchtext.data.Datasets: 数据集类，<code>__getitem__</code>返回 Example实例, torchtext.data.TabularDataset是其子类。</li>
+<li>torchtext.data.Field : 用来定义字段的处理方法（文本字段，标签字段）创建 Example时的 预处理，batch 时的一些处理操作。</li>
+<li>torchtext.data.Iterator: 迭代器，用来生成 batch</li>
+<li>torchtext.datasets: 包含了常见的数据集.</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">import</span> <span class="nn">string</span><span class="o">,</span><span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">torchtext</span>
+
+<span class="n">MAX_WORDS</span> <span class="o">=</span> <span class="mi">10000</span>  <span class="c1"># 仅考虑最高频的10000个词</span>
+<span class="n">MAX_LEN</span> <span class="o">=</span> <span class="mi">200</span>  <span class="c1"># 每个样本保留200个词的长度</span>
+<span class="n">BATCH_SIZE</span> <span class="o">=</span> <span class="mi">20</span> 
+
+<span class="c1">#分词方法</span>
+<span class="n">tokenizer</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span><span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s1">&#39;[</span><span class="si">%s</span><span class="s1">]&#39;</span><span class="o">%</span><span class="n">string</span><span class="o">.</span><span class="n">punctuation</span><span class="p">,</span><span class="s2">&quot;&quot;</span><span class="p">,</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">)</span>
+
+<span class="c1">#过滤掉低频词</span>
+<span class="k">def</span> <span class="nf">filterLowFreqWords</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span><span class="n">vocab</span><span class="p">):</span>
+    <span class="n">arr</span> <span class="o">=</span> <span class="p">[[</span><span class="n">x</span> <span class="k">if</span> <span class="n">x</span><span class="o">&lt;</span><span class="n">MAX_WORDS</span> <span class="k">else</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">example</span><span class="p">]</span> 
+           <span class="k">for</span> <span class="n">example</span> <span class="ow">in</span> <span class="n">arr</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">arr</span>
+
+<span class="c1">#1,定义各个字段的预处理方法</span>
+<span class="n">TEXT</span> <span class="o">=</span> <span class="n">torchtext</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">Field</span><span class="p">(</span><span class="n">sequential</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">tokenize</span><span class="o">=</span><span class="n">tokenizer</span><span class="p">,</span> <span class="n">lower</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> 
+                  <span class="n">fix_length</span><span class="o">=</span><span class="n">MAX_LEN</span><span class="p">,</span><span class="n">postprocessing</span> <span class="o">=</span> <span class="n">filterLowFreqWords</span><span class="p">)</span>
+
+<span class="n">LABEL</span> <span class="o">=</span> <span class="n">torchtext</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">Field</span><span class="p">(</span><span class="n">sequential</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">use_vocab</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<span class="c1">#2,构建表格型dataset</span>
+<span class="c1">#torchtext.data.TabularDataset可读取csv,tsv,json等格式</span>
+<span class="n">ds_train</span><span class="p">,</span> <span class="n">ds_test</span> <span class="o">=</span> <span class="n">torchtext</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">TabularDataset</span><span class="o">.</span><span class="n">splits</span><span class="p">(</span>
+        <span class="n">path</span><span class="o">=</span><span class="s1">&#39;../data/imdb&#39;</span><span class="p">,</span> <span class="n">train</span><span class="o">=</span><span class="s1">&#39;train.tsv&#39;</span><span class="p">,</span><span class="n">test</span><span class="o">=</span><span class="s1">&#39;test.tsv&#39;</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;tsv&#39;</span><span class="p">,</span>
+        <span class="n">fields</span><span class="o">=</span><span class="p">[(</span><span class="s1">&#39;label&#39;</span><span class="p">,</span> <span class="n">LABEL</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;text&#39;</span><span class="p">,</span> <span class="n">TEXT</span><span class="p">)],</span><span class="n">skip_header</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
+
+<span class="c1">#3,构建词典</span>
+<span class="n">TEXT</span><span class="o">.</span><span class="n">build_vocab</span><span class="p">(</span><span class="n">ds_train</span><span class="p">)</span>
+
+<span class="c1">#4,构建数据管道迭代器</span>
+<span class="n">train_iter</span><span class="p">,</span> <span class="n">test_iter</span> <span class="o">=</span> <span class="n">torchtext</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">Iterator</span><span class="o">.</span><span class="n">splits</span><span class="p">(</span>
+        <span class="p">(</span><span class="n">ds_train</span><span class="p">,</span> <span class="n">ds_test</span><span class="p">),</span>  <span class="n">sort_within_batch</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">sort_key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">text</span><span class="p">),</span>
+        <span class="n">batch_sizes</span><span class="o">=</span><span class="p">(</span><span class="n">BATCH_SIZE</span><span class="p">,</span><span class="n">BATCH_SIZE</span><span class="p">))</span>
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code><span class="c1">#查看example信息</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">ds_train</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">ds_train</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">label</span><span class="p">)</span>
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code>[&#39;it&#39;, &#39;really&#39;, &#39;boggles&#39;, &#39;my&#39;, &#39;mind&#39;, &#39;when&#39;, &#39;someone&#39;, &#39;comes&#39;, &#39;across&#39;, &#39;a&#39;, &#39;movie&#39;, &#39;like&#39;, &#39;this&#39;, &#39;and&#39;, &#39;claims&#39;, &#39;it&#39;, &#39;to&#39;, &#39;be&#39;, &#39;one&#39;, &#39;of&#39;, &#39;the&#39;, &#39;worst&#39;, &#39;slasher&#39;, &#39;films&#39;, &#39;out&#39;, &#39;there&#39;, &#39;this&#39;, &#39;is&#39;, &#39;by&#39;, &#39;far&#39;, &#39;not&#39;, &#39;one&#39;, &#39;of&#39;, &#39;the&#39;, &#39;worst&#39;, &#39;out&#39;, &#39;there&#39;, &#39;still&#39;, &#39;not&#39;, &#39;a&#39;, &#39;good&#39;, &#39;movie&#39;, &#39;but&#39;, &#39;not&#39;, &#39;the&#39;, &#39;worst&#39;, &#39;nonetheless&#39;, &#39;go&#39;, &#39;see&#39;, &#39;something&#39;, &#39;like&#39;, &#39;death&#39;, &#39;nurse&#39;, &#39;or&#39;, &#39;blood&#39;, &#39;lake&#39;, &#39;and&#39;, &#39;then&#39;, &#39;come&#39;, &#39;back&#39;, &#39;to&#39;, &#39;me&#39;, &#39;and&#39;, &#39;tell&#39;, &#39;me&#39;, &#39;if&#39;, &#39;you&#39;, &#39;think&#39;, &#39;the&#39;, &#39;night&#39;, &#39;brings&#39;, &#39;charlie&#39;, &#39;is&#39;, &#39;the&#39;, &#39;worst&#39;, &#39;the&#39;, &#39;film&#39;, &#39;has&#39;, &#39;decent&#39;, &#39;camera&#39;, &#39;work&#39;, &#39;and&#39;, &#39;editing&#39;, &#39;which&#39;, &#39;is&#39;, &#39;way&#39;, &#39;more&#39;, &#39;than&#39;, &#39;i&#39;, &#39;can&#39;, &#39;say&#39;, &#39;for&#39;, &#39;many&#39;, &#39;more&#39;, &#39;extremely&#39;, &#39;obscure&#39;, &#39;slasher&#39;, &#39;filmsbr&#39;, &#39;br&#39;, &#39;the&#39;, &#39;film&#39;, &#39;doesnt&#39;, &#39;deliver&#39;, &#39;on&#39;, &#39;the&#39;, &#39;onscreen&#39;, &#39;deaths&#39;, &#39;theres&#39;, &#39;one&#39;, &#39;death&#39;, &#39;where&#39;, &#39;you&#39;, &#39;see&#39;, &#39;his&#39;, &#39;pruning&#39;, &#39;saw&#39;, &#39;rip&#39;, &#39;into&#39;, &#39;a&#39;, &#39;neck&#39;, &#39;but&#39;, &#39;all&#39;, &#39;other&#39;, &#39;deaths&#39;, &#39;are&#39;, &#39;hardly&#39;, &#39;interesting&#39;, &#39;but&#39;, &#39;the&#39;, &#39;lack&#39;, &#39;of&#39;, &#39;onscreen&#39;, &#39;graphic&#39;, &#39;violence&#39;, &#39;doesnt&#39;, &#39;mean&#39;, &#39;this&#39;, &#39;isnt&#39;, &#39;a&#39;, &#39;slasher&#39;, &#39;film&#39;, &#39;just&#39;, &#39;a&#39;, &#39;bad&#39;, &#39;onebr&#39;, &#39;br&#39;, &#39;the&#39;, &#39;film&#39;, &#39;was&#39;, &#39;obviously&#39;, &#39;intended&#39;, &#39;not&#39;, &#39;to&#39;, &#39;be&#39;, &#39;taken&#39;, &#39;too&#39;, &#39;seriously&#39;, &#39;the&#39;, &#39;film&#39;, &#39;came&#39;, &#39;in&#39;, &#39;at&#39;, &#39;the&#39;, &#39;end&#39;, &#39;of&#39;, &#39;the&#39;, &#39;second&#39;, &#39;slasher&#39;, &#39;cycle&#39;, &#39;so&#39;, &#39;it&#39;, &#39;certainly&#39;, &#39;was&#39;, &#39;a&#39;, &#39;reflection&#39;, &#39;on&#39;, &#39;traditional&#39;, &#39;slasher&#39;, &#39;elements&#39;, &#39;done&#39;, &#39;in&#39;, &#39;a&#39;, &#39;tongue&#39;, &#39;in&#39;, &#39;cheek&#39;, &#39;way&#39;, &#39;for&#39;, &#39;example&#39;, &#39;after&#39;, &#39;a&#39;, &#39;kill&#39;, &#39;charlie&#39;, &#39;goes&#39;, &#39;to&#39;, &#39;the&#39;, &#39;towns&#39;, &#39;welcome&#39;, &#39;sign&#39;, &#39;and&#39;, &#39;marks&#39;, &#39;the&#39;, &#39;population&#39;, &#39;down&#39;, &#39;one&#39;, &#39;less&#39;, &#39;this&#39;, &#39;is&#39;, &#39;something&#39;, &#39;that&#39;, &#39;can&#39;, &#39;only&#39;, &#39;get&#39;, &#39;a&#39;, &#39;laughbr&#39;, &#39;br&#39;, &#39;if&#39;, &#39;youre&#39;, &#39;into&#39;, &#39;slasher&#39;, &#39;films&#39;, &#39;definitely&#39;, &#39;give&#39;, &#39;this&#39;, &#39;film&#39;, &#39;a&#39;, &#39;watch&#39;, &#39;it&#39;, &#39;is&#39;, &#39;slightly&#39;, &#39;different&#39;, &#39;than&#39;, &#39;your&#39;, &#39;usual&#39;, &#39;slasher&#39;, &#39;film&#39;, &#39;with&#39;, &#39;possibility&#39;, &#39;of&#39;, &#39;two&#39;, &#39;killers&#39;, &#39;but&#39;, &#39;not&#39;, &#39;by&#39;, &#39;much&#39;, &#39;the&#39;, &#39;comedy&#39;, &#39;of&#39;, &#39;the&#39;, &#39;movie&#39;, &#39;is&#39;, &#39;pretty&#39;, &#39;much&#39;, &#39;telling&#39;, &#39;the&#39;, &#39;audience&#39;, &#39;to&#39;, &#39;relax&#39;, &#39;and&#39;, &#39;not&#39;, &#39;take&#39;, &#39;the&#39;, &#39;movie&#39;, &#39;so&#39;, &#39;god&#39;, &#39;darn&#39;, &#39;serious&#39;, &#39;you&#39;, &#39;may&#39;, &#39;forget&#39;, &#39;the&#39;, &#39;movie&#39;, &#39;you&#39;, &#39;may&#39;, &#39;remember&#39;, &#39;it&#39;, &#39;ill&#39;, &#39;remember&#39;, &#39;it&#39;, &#39;because&#39;, &#39;i&#39;, &#39;love&#39;, &#39;the&#39;, &#39;name&#39;]
+0
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code><span class="c1"># 查看词典信息</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">TEXT</span><span class="o">.</span><span class="n">vocab</span><span class="p">))</span>
+
+<span class="c1">#itos: index to string</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">TEXT</span><span class="o">.</span><span class="n">vocab</span><span class="o">.</span><span class="n">itos</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> 
+<span class="nb">print</span><span class="p">(</span><span class="n">TEXT</span><span class="o">.</span><span class="n">vocab</span><span class="o">.</span><span class="n">itos</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> 
+
+<span class="c1">#stoi: string to index</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">TEXT</span><span class="o">.</span><span class="n">vocab</span><span class="o">.</span><span class="n">stoi</span><span class="p">[</span><span class="s1">&#39;&lt;unk&gt;&#39;</span><span class="p">])</span> <span class="c1">#unknown 未知词</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">TEXT</span><span class="o">.</span><span class="n">vocab</span><span class="o">.</span><span class="n">stoi</span><span class="p">[</span><span class="s1">&#39;&lt;pad&gt;&#39;</span><span class="p">])</span> <span class="c1">#padding  填充</span>
+
+
+<span class="c1">#freqs: 词频</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">TEXT</span><span class="o">.</span><span class="n">vocab</span><span class="o">.</span><span class="n">freqs</span><span class="p">[</span><span class="s1">&#39;&lt;unk&gt;&#39;</span><span class="p">])</span> 
+<span class="nb">print</span><span class="p">(</span><span class="n">TEXT</span><span class="o">.</span><span class="n">vocab</span><span class="o">.</span><span class="n">freqs</span><span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">])</span> 
+<span class="nb">print</span><span class="p">(</span><span class="n">TEXT</span><span class="o">.</span><span class="n">vocab</span><span class="o">.</span><span class="n">freqs</span><span class="p">[</span><span class="s1">&#39;good&#39;</span><span class="p">])</span> 
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code>108197
+&lt;unk&gt;
+&lt;pad&gt;
+0
+1
+0
+129453
+11457
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code><span class="c1"># 查看数据管道信息</span>
+<span class="c1"># 注意有坑：text第0维是句子长度</span>
+<span class="k">for</span> <span class="n">batch</span> <span class="ow">in</span> <span class="n">train_iter</span><span class="p">:</span>
+    <span class="n">features</span> <span class="o">=</span> <span class="n">batch</span><span class="o">.</span><span class="n">text</span>
+    <span class="n">labels</span> <span class="o">=</span> <span class="n">batch</span><span class="o">.</span><span class="n">label</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">features</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">features</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span>
+    <span class="k">break</span>
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code>tensor([[  17,   31,  148,  ...,   54,   11,  201],
+        [   2,    2,  904,  ...,  335,    7,  109],
+        [1371, 1737,   44,  ...,  806,    2,   11],
+        ...,
+        [   6,    5,   62,  ...,    1,    1,    1],
+        [ 170,    0,   27,  ...,    1,    1,    1],
+        [  15,    0,   45,  ...,    1,    1,    1]])
+torch.Size([200, 20])
+tensor([0, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 0, 0, 0, 0])
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code><span class="c1"># 将数据管道组织成torch.utils.data.DataLoader相似的features,label输出形式</span>
+<span class="k">class</span> <span class="nc">DataLoader</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">data_iter</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_iter</span> <span class="o">=</span> <span class="n">data_iter</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">length</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">data_iter</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">length</span>
+
+    <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># 注意：此处调整features为 batch first，并调整label的shape和dtype</span>
+        <span class="k">for</span> <span class="n">batch</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_iter</span><span class="p">:</span>
+            <span class="k">yield</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">batch</span><span class="o">.</span><span class="n">text</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span>
+                  <span class="n">torch</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="n">batch</span><span class="o">.</span><span class="n">label</span><span class="o">.</span><span class="n">float</span><span class="p">(),</span><span class="n">dim</span> <span class="o">=</span> <span class="mi">1</span><span class="p">))</span>
+
+<span class="n">dl_train</span> <span class="o">=</span> <span class="n">DataLoader</span><span class="p">(</span><span class="n">train_iter</span><span class="p">)</span>
+<span class="n">dl_test</span> <span class="o">=</span> <span class="n">DataLoader</span><span class="p">(</span><span class="n">test_iter</span><span class="p">)</span>
+</code></pre></div>
+
+<h3 id="二定义模型">二，定义模型<a class="headerlink" href="#二定义模型" title="Permanent link">#</a></h3>
+<p>使用Pytorch通常有三种方式构建模型：使用nn.Sequential按层顺序构建模型，继承nn.Module基类构建自定义模型，继承nn.Module基类构建模型并辅助应用模型容器(nn.Sequential,nn.ModuleList,nn.ModuleDict)进行封装。</p>
+<p>此处选择使用第三种方式进行构建。</p>
+<p>由于接下来使用类形式的训练循环，我们将模型封装成torchkeras.Model类来获得类似Keras中高阶模型接口的功能。</p>
+<p>Model类实际上继承自nn.Module类。</p>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">from</span> <span class="nn">torch</span> <span class="kn">import</span> <span class="n">nn</span> 
+<span class="kn">import</span> <span class="nn">torchkeras</span>
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code><span class="n">torch</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">()</span>
+<span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">from</span> <span class="nn">torch</span> <span class="kn">import</span> <span class="n">nn</span> 
+
+<span class="k">class</span> <span class="nc">Net</span><span class="p">(</span><span class="n">torchkeras</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">Net</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+        <span class="c1">#设置padding_idx参数后将在训练过程中将填充的token始终赋值为0向量</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">embedding</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Embedding</span><span class="p">(</span><span class="n">num_embeddings</span> <span class="o">=</span> <span class="n">MAX_WORDS</span><span class="p">,</span><span class="n">embedding_dim</span> <span class="o">=</span> <span class="mi">3</span><span class="p">,</span><span class="n">padding_idx</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">conv</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">conv</span><span class="o">.</span><span class="n">add_module</span><span class="p">(</span><span class="s2">&quot;conv_1&quot;</span><span class="p">,</span><span class="n">nn</span><span class="o">.</span><span class="n">Conv1d</span><span class="p">(</span><span class="n">in_channels</span> <span class="o">=</span> <span class="mi">3</span><span class="p">,</span><span class="n">out_channels</span> <span class="o">=</span> <span class="mi">16</span><span class="p">,</span><span class="n">kernel_size</span> <span class="o">=</span> <span class="mi">5</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">conv</span><span class="o">.</span><span class="n">add_module</span><span class="p">(</span><span class="s2">&quot;pool_1&quot;</span><span class="p">,</span><span class="n">nn</span><span class="o">.</span><span class="n">MaxPool1d</span><span class="p">(</span><span class="n">kernel_size</span> <span class="o">=</span> <span class="mi">2</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">conv</span><span class="o">.</span><span class="n">add_module</span><span class="p">(</span><span class="s2">&quot;relu_1&quot;</span><span class="p">,</span><span class="n">nn</span><span class="o">.</span><span class="n">ReLU</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">conv</span><span class="o">.</span><span class="n">add_module</span><span class="p">(</span><span class="s2">&quot;conv_2&quot;</span><span class="p">,</span><span class="n">nn</span><span class="o">.</span><span class="n">Conv1d</span><span class="p">(</span><span class="n">in_channels</span> <span class="o">=</span> <span class="mi">16</span><span class="p">,</span><span class="n">out_channels</span> <span class="o">=</span> <span class="mi">128</span><span class="p">,</span><span class="n">kernel_size</span> <span class="o">=</span> <span class="mi">2</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">conv</span><span class="o">.</span><span class="n">add_module</span><span class="p">(</span><span class="s2">&quot;pool_2&quot;</span><span class="p">,</span><span class="n">nn</span><span class="o">.</span><span class="n">MaxPool1d</span><span class="p">(</span><span class="n">kernel_size</span> <span class="o">=</span> <span class="mi">2</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">conv</span><span class="o">.</span><span class="n">add_module</span><span class="p">(</span><span class="s2">&quot;relu_2&quot;</span><span class="p">,</span><span class="n">nn</span><span class="o">.</span><span class="n">ReLU</span><span class="p">())</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">dense</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dense</span><span class="o">.</span><span class="n">add_module</span><span class="p">(</span><span class="s2">&quot;flatten&quot;</span><span class="p">,</span><span class="n">nn</span><span class="o">.</span><span class="n">Flatten</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dense</span><span class="o">.</span><span class="n">add_module</span><span class="p">(</span><span class="s2">&quot;linear&quot;</span><span class="p">,</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="mi">6144</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dense</span><span class="o">.</span><span class="n">add_module</span><span class="p">(</span><span class="s2">&quot;sigmoid&quot;</span><span class="p">,</span><span class="n">nn</span><span class="o">.</span><span class="n">Sigmoid</span><span class="p">())</span>
+
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">x</span><span class="p">):</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">embedding</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">conv</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dense</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">y</span>
+
+
+<span class="n">model</span> <span class="o">=</span> <span class="n">Net</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+
+<span class="n">model</span><span class="o">.</span><span class="n">summary</span><span class="p">(</span><span class="n">input_shape</span> <span class="o">=</span> <span class="p">(</span><span class="mi">200</span><span class="p">,),</span><span class="n">input_dtype</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">LongTensor</span><span class="p">)</span>
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code>Net(
+  (embedding): Embedding(10000, 3, padding_idx=1)
+  (conv): Sequential(
+    (conv_1): Conv1d(3, 16, kernel_size=(5,), stride=(1,))
+    (pool_1): MaxPool1d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
+    (relu_1): ReLU()
+    (conv_2): Conv1d(16, 128, kernel_size=(2,), stride=(1,))
+    (pool_2): MaxPool1d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
+    (relu_2): ReLU()
+  )
+  (dense): Sequential(
+    (flatten): Flatten()
+    (linear): Linear(in_features=6144, out_features=1, bias=True)
+    (sigmoid): Sigmoid()
+  )
+)
+----------------------------------------------------------------
+        Layer (type)               Output Shape         Param #
+================================================================
+         Embedding-1               [-1, 200, 3]          30,000
+            Conv1d-2              [-1, 16, 196]             256
+         MaxPool1d-3               [-1, 16, 98]               0
+              ReLU-4               [-1, 16, 98]               0
+            Conv1d-5              [-1, 128, 97]           4,224
+         MaxPool1d-6              [-1, 128, 48]               0
+              ReLU-7              [-1, 128, 48]               0
+           Flatten-8                 [-1, 6144]               0
+            Linear-9                    [-1, 1]           6,145
+          Sigmoid-10                    [-1, 1]               0
+================================================================
+Total params: 40,625
+Trainable params: 40,625
+Non-trainable params: 0
+----------------------------------------------------------------
+Input size (MB): 0.000763
+Forward/backward pass size (MB): 0.287796
+Params size (MB): 0.154972
+Estimated Total Size (MB): 0.443531
+----------------------------------------------------------------
+</code></pre></div>
+
+<h3 id="三训练模型">三，训练模型<a class="headerlink" href="#三训练模型" title="Permanent link">#</a></h3>
+<p>训练Pytorch通常需要用户编写自定义训练循环，训练循环的代码风格因人而异。</p>
+<p>有3类典型的训练循环代码风格：脚本形式训练循环，函数形式训练循环，类形式训练循环。</p>
+<p>此处介绍一种类形式的训练循环。</p>
+<p>我们仿照Keras定义了一个高阶的模型接口Model,实现 fit, validate，predict, summary 方法，相当于用户自定义高阶API。</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># 准确率</span>
+<span class="k">def</span> <span class="nf">accuracy</span><span class="p">(</span><span class="n">y_pred</span><span class="p">,</span><span class="n">y_true</span><span class="p">):</span>
+    <span class="n">y_pred</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">y_pred</span><span class="o">&gt;</span><span class="mf">0.5</span><span class="p">,</span><span class="n">torch</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">y_pred</span><span class="p">,</span><span class="n">dtype</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">float32</span><span class="p">),</span>
+                      <span class="n">torch</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">y_pred</span><span class="p">,</span><span class="n">dtype</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">float32</span><span class="p">))</span>
+    <span class="n">acc</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">torch</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">y_true</span><span class="o">-</span><span class="n">y_pred</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">acc</span>
+
+<span class="n">model</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">loss_func</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">BCELoss</span><span class="p">(),</span><span class="n">optimizer</span><span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">Adagrad</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span><span class="n">lr</span> <span class="o">=</span> <span class="mf">0.02</span><span class="p">),</span>
+             <span class="n">metrics_dict</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;accuracy&quot;</span><span class="p">:</span><span class="n">accuracy</span><span class="p">})</span>
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code><span class="c1"># 有时候模型训练过程中不收敛，需要多试几次</span>
+<span class="n">dfhistory</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span><span class="n">dl_train</span><span class="p">,</span><span class="n">dl_val</span><span class="o">=</span><span class="n">dl_test</span><span class="p">,</span><span class="n">log_step_freq</span><span class="o">=</span> <span class="mi">200</span><span class="p">)</span>
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code>Start Training ...
+
+================================================================================2020-05-09 17:53:56
+{&#39;step&#39;: 200, &#39;loss&#39;: 1.127, &#39;accuracy&#39;: 0.504}
+{&#39;step&#39;: 400, &#39;loss&#39;: 0.908, &#39;accuracy&#39;: 0.517}
+{&#39;step&#39;: 600, &#39;loss&#39;: 0.833, &#39;accuracy&#39;: 0.531}
+{&#39;step&#39;: 800, &#39;loss&#39;: 0.793, &#39;accuracy&#39;: 0.545}
+{&#39;step&#39;: 1000, &#39;loss&#39;: 0.765, &#39;accuracy&#39;: 0.56}
+
+ +-------+-------+----------+----------+--------------+
+| epoch |  loss | accuracy | val_loss | val_accuracy |
++-------+-------+----------+----------+--------------+
+|   1   | 0.765 |   0.56   |   0.64   |     0.64     |
++-------+-------+----------+----------+--------------+
+
+================================================================================2020-05-09 17:54:23
+{&#39;step&#39;: 200, &#39;loss&#39;: 0.626, &#39;accuracy&#39;: 0.659}
+{&#39;step&#39;: 400, &#39;loss&#39;: 0.621, &#39;accuracy&#39;: 0.662}
+{&#39;step&#39;: 600, &#39;loss&#39;: 0.616, &#39;accuracy&#39;: 0.664}
+{&#39;step&#39;: 800, &#39;loss&#39;: 0.61, &#39;accuracy&#39;: 0.671}
+{&#39;step&#39;: 1000, &#39;loss&#39;: 0.603, &#39;accuracy&#39;: 0.677}
+
+ +-------+-------+----------+----------+--------------+
+| epoch |  loss | accuracy | val_loss | val_accuracy |
++-------+-------+----------+----------+--------------+
+|   2   | 0.603 |  0.677   |  0.577   |    0.705     |
++-------+-------+----------+----------+--------------+
+
+================================================================================2020-05-09 17:54:50
+{&#39;step&#39;: 200, &#39;loss&#39;: 0.545, &#39;accuracy&#39;: 0.726}
+{&#39;step&#39;: 400, &#39;loss&#39;: 0.538, &#39;accuracy&#39;: 0.735}
+{&#39;step&#39;: 600, &#39;loss&#39;: 0.532, &#39;accuracy&#39;: 0.737}
+{&#39;step&#39;: 800, &#39;loss&#39;: 0.531, &#39;accuracy&#39;: 0.737}
+{&#39;step&#39;: 1000, &#39;loss&#39;: 0.528, &#39;accuracy&#39;: 0.739}
+
+ +-------+-------+----------+----------+--------------+
+| epoch |  loss | accuracy | val_loss | val_accuracy |
++-------+-------+----------+----------+--------------+
+|   3   | 0.528 |  0.739   |  0.536   |    0.739     |
++-------+-------+----------+----------+--------------+
+
+================================================================================2020-05-09 17:55:18
+{&#39;step&#39;: 200, &#39;loss&#39;: 0.488, &#39;accuracy&#39;: 0.773}
+{&#39;step&#39;: 400, &#39;loss&#39;: 0.482, &#39;accuracy&#39;: 0.774}
+{&#39;step&#39;: 600, &#39;loss&#39;: 0.482, &#39;accuracy&#39;: 0.773}
+{&#39;step&#39;: 800, &#39;loss&#39;: 0.479, &#39;accuracy&#39;: 0.773}
+{&#39;step&#39;: 1000, &#39;loss&#39;: 0.473, &#39;accuracy&#39;: 0.776}
+
+ +-------+-------+----------+----------+--------------+
+| epoch |  loss | accuracy | val_loss | val_accuracy |
++-------+-------+----------+----------+--------------+
+|   4   | 0.473 |  0.776   |  0.504   |    0.766     |
++-------+-------+----------+----------+--------------+
+
+================================================================================2020-05-09 17:55:45
+{&#39;step&#39;: 200, &#39;loss&#39;: 0.446, &#39;accuracy&#39;: 0.789}
+{&#39;step&#39;: 400, &#39;loss&#39;: 0.437, &#39;accuracy&#39;: 0.796}
+{&#39;step&#39;: 600, &#39;loss&#39;: 0.436, &#39;accuracy&#39;: 0.799}
+{&#39;step&#39;: 800, &#39;loss&#39;: 0.436, &#39;accuracy&#39;: 0.798}
+{&#39;step&#39;: 1000, &#39;loss&#39;: 0.434, &#39;accuracy&#39;: 0.8}
+
+ +-------+-------+----------+----------+--------------+
+| epoch |  loss | accuracy | val_loss | val_accuracy |
++-------+-------+----------+----------+--------------+
+|   5   | 0.434 |   0.8    |  0.481   |    0.774     |
++-------+-------+----------+----------+--------------+
+
+================================================================================2020-05-09 17:56:12
+{&#39;step&#39;: 200, &#39;loss&#39;: 0.404, &#39;accuracy&#39;: 0.817}
+{&#39;step&#39;: 400, &#39;loss&#39;: 0.4, &#39;accuracy&#39;: 0.819}
+{&#39;step&#39;: 600, &#39;loss&#39;: 0.398, &#39;accuracy&#39;: 0.821}
+{&#39;step&#39;: 800, &#39;loss&#39;: 0.402, &#39;accuracy&#39;: 0.818}
+{&#39;step&#39;: 1000, &#39;loss&#39;: 0.402, &#39;accuracy&#39;: 0.817}
+
+ +-------+-------+----------+----------+--------------+
+| epoch |  loss | accuracy | val_loss | val_accuracy |
++-------+-------+----------+----------+--------------+
+|   6   | 0.402 |  0.817   |   0.47   |    0.781     |
++-------+-------+----------+----------+--------------+
+
+================================================================================2020-05-09 17:56:39
+{&#39;step&#39;: 200, &#39;loss&#39;: 0.369, &#39;accuracy&#39;: 0.834}
+{&#39;step&#39;: 400, &#39;loss&#39;: 0.374, &#39;accuracy&#39;: 0.833}
+{&#39;step&#39;: 600, &#39;loss&#39;: 0.373, &#39;accuracy&#39;: 0.834}
+{&#39;step&#39;: 800, &#39;loss&#39;: 0.374, &#39;accuracy&#39;: 0.834}
+{&#39;step&#39;: 1000, &#39;loss&#39;: 0.375, &#39;accuracy&#39;: 0.833}
+
+ +-------+-------+----------+----------+--------------+
+| epoch |  loss | accuracy | val_loss | val_accuracy |
++-------+-------+----------+----------+--------------+
+|   7   | 0.375 |  0.833   |  0.468   |    0.787     |
++-------+-------+----------+----------+--------------+
+
+================================================================================2020-05-09 17:57:06
+{&#39;step&#39;: 200, &#39;loss&#39;: 0.36, &#39;accuracy&#39;: 0.839}
+{&#39;step&#39;: 400, &#39;loss&#39;: 0.355, &#39;accuracy&#39;: 0.846}
+{&#39;step&#39;: 600, &#39;loss&#39;: 0.35, &#39;accuracy&#39;: 0.849}
+{&#39;step&#39;: 800, &#39;loss&#39;: 0.353, &#39;accuracy&#39;: 0.846}
+{&#39;step&#39;: 1000, &#39;loss&#39;: 0.352, &#39;accuracy&#39;: 0.847}
+
+ +-------+-------+----------+----------+--------------+
+| epoch |  loss | accuracy | val_loss | val_accuracy |
++-------+-------+----------+----------+--------------+
+|   8   | 0.352 |  0.847   |  0.461   |    0.791     |
++-------+-------+----------+----------+--------------+
+
+================================================================================2020-05-09 17:57:33
+{&#39;step&#39;: 200, &#39;loss&#39;: 0.313, &#39;accuracy&#39;: 0.867}
+{&#39;step&#39;: 400, &#39;loss&#39;: 0.326, &#39;accuracy&#39;: 0.862}
+{&#39;step&#39;: 600, &#39;loss&#39;: 0.331, &#39;accuracy&#39;: 0.86}
+{&#39;step&#39;: 800, &#39;loss&#39;: 0.333, &#39;accuracy&#39;: 0.859}
+{&#39;step&#39;: 1000, &#39;loss&#39;: 0.332, &#39;accuracy&#39;: 0.859}
+
+ +-------+-------+----------+----------+--------------+
+| epoch |  loss | accuracy | val_loss | val_accuracy |
++-------+-------+----------+----------+--------------+
+|   9   | 0.332 |  0.859   |  0.462   |    0.789     |
++-------+-------+----------+----------+--------------+
+
+================================================================================2020-05-09 17:58:00
+{&#39;step&#39;: 200, &#39;loss&#39;: 0.309, &#39;accuracy&#39;: 0.869}
+{&#39;step&#39;: 400, &#39;loss&#39;: 0.31, &#39;accuracy&#39;: 0.872}
+{&#39;step&#39;: 600, &#39;loss&#39;: 0.31, &#39;accuracy&#39;: 0.871}
+{&#39;step&#39;: 800, &#39;loss&#39;: 0.311, &#39;accuracy&#39;: 0.869}
+{&#39;step&#39;: 1000, &#39;loss&#39;: 0.314, &#39;accuracy&#39;: 0.869}
+
+ +-------+-------+----------+----------+--------------+
+| epoch |  loss | accuracy | val_loss | val_accuracy |
++-------+-------+----------+----------+--------------+
+|   10  | 0.314 |  0.869   |   0.46   |    0.793     |
++-------+-------+----------+----------+--------------+
+
+================================================================================2020-05-09 17:58:26
+{&#39;step&#39;: 200, &#39;loss&#39;: 0.3, &#39;accuracy&#39;: 0.88}
+{&#39;step&#39;: 400, &#39;loss&#39;: 0.293, &#39;accuracy&#39;: 0.881}
+{&#39;step&#39;: 600, &#39;loss&#39;: 0.297, &#39;accuracy&#39;: 0.878}
+{&#39;step&#39;: 800, &#39;loss&#39;: 0.299, &#39;accuracy&#39;: 0.877}
+{&#39;step&#39;: 1000, &#39;loss&#39;: 0.297, &#39;accuracy&#39;: 0.878}
+
+ +-------+-------+----------+----------+--------------+
+| epoch |  loss | accuracy | val_loss | val_accuracy |
++-------+-------+----------+----------+--------------+
+|   11  | 0.297 |  0.878   |  0.471   |    0.789     |
++-------+-------+----------+----------+--------------+
+
+================================================================================2020-05-09 17:58:54
+{&#39;step&#39;: 200, &#39;loss&#39;: 0.275, &#39;accuracy&#39;: 0.891}
+{&#39;step&#39;: 400, &#39;loss&#39;: 0.282, &#39;accuracy&#39;: 0.887}
+{&#39;step&#39;: 600, &#39;loss&#39;: 0.283, &#39;accuracy&#39;: 0.888}
+{&#39;step&#39;: 800, &#39;loss&#39;: 0.283, &#39;accuracy&#39;: 0.887}
+{&#39;step&#39;: 1000, &#39;loss&#39;: 0.282, &#39;accuracy&#39;: 0.886}
+
+ +-------+-------+----------+----------+--------------+
+| epoch |  loss | accuracy | val_loss | val_accuracy |
++-------+-------+----------+----------+--------------+
+|   12  | 0.282 |  0.886   |  0.465   |    0.795     |
++-------+-------+----------+----------+--------------+
+
+================================================================================2020-05-09 17:59:22
+{&#39;step&#39;: 200, &#39;loss&#39;: 0.26, &#39;accuracy&#39;: 0.903}
+{&#39;step&#39;: 400, &#39;loss&#39;: 0.268, &#39;accuracy&#39;: 0.894}
+{&#39;step&#39;: 600, &#39;loss&#39;: 0.271, &#39;accuracy&#39;: 0.893}
+{&#39;step&#39;: 800, &#39;loss&#39;: 0.267, &#39;accuracy&#39;: 0.893}
+{&#39;step&#39;: 1000, &#39;loss&#39;: 0.268, &#39;accuracy&#39;: 0.892}
+
+ +-------+-------+----------+----------+--------------+
+| epoch |  loss | accuracy | val_loss | val_accuracy |
++-------+-------+----------+----------+--------------+
+|   13  | 0.268 |  0.892   |  0.472   |    0.794     |
++-------+-------+----------+----------+--------------+
+
+================================================================================2020-05-09 17:59:49
+{&#39;step&#39;: 200, &#39;loss&#39;: 0.252, &#39;accuracy&#39;: 0.903}
+{&#39;step&#39;: 400, &#39;loss&#39;: 0.25, &#39;accuracy&#39;: 0.905}
+{&#39;step&#39;: 600, &#39;loss&#39;: 0.251, &#39;accuracy&#39;: 0.903}
+{&#39;step&#39;: 800, &#39;loss&#39;: 0.253, &#39;accuracy&#39;: 0.9}
+{&#39;step&#39;: 1000, &#39;loss&#39;: 0.255, &#39;accuracy&#39;: 0.9}
+
+ +-------+-------+----------+----------+--------------+
+| epoch |  loss | accuracy | val_loss | val_accuracy |
++-------+-------+----------+----------+--------------+
+|   14  | 0.255 |   0.9    |  0.469   |    0.796     |
++-------+-------+----------+----------+--------------+
+
+================================================================================2020-05-09 18:00:16
+{&#39;step&#39;: 200, &#39;loss&#39;: 0.242, &#39;accuracy&#39;: 0.912}
+{&#39;step&#39;: 400, &#39;loss&#39;: 0.237, &#39;accuracy&#39;: 0.911}
+{&#39;step&#39;: 600, &#39;loss&#39;: 0.24, &#39;accuracy&#39;: 0.91}
+{&#39;step&#39;: 800, &#39;loss&#39;: 0.241, &#39;accuracy&#39;: 0.908}
+{&#39;step&#39;: 1000, &#39;loss&#39;: 0.242, &#39;accuracy&#39;: 0.906}
+
+ +-------+-------+----------+----------+--------------+
+| epoch |  loss | accuracy | val_loss | val_accuracy |
++-------+-------+----------+----------+--------------+
+|   15  | 0.242 |  0.906   |  0.475   |    0.797     |
++-------+-------+----------+----------+--------------+
+
+================================================================================2020-05-09 18:00:44
+{&#39;step&#39;: 200, &#39;loss&#39;: 0.218, &#39;accuracy&#39;: 0.921}
+{&#39;step&#39;: 400, &#39;loss&#39;: 0.223, &#39;accuracy&#39;: 0.916}
+{&#39;step&#39;: 600, &#39;loss&#39;: 0.229, &#39;accuracy&#39;: 0.912}
+{&#39;step&#39;: 800, &#39;loss&#39;: 0.229, &#39;accuracy&#39;: 0.913}
+{&#39;step&#39;: 1000, &#39;loss&#39;: 0.231, &#39;accuracy&#39;: 0.911}
+
+ +-------+-------+----------+----------+--------------+
+| epoch |  loss | accuracy | val_loss | val_accuracy |
++-------+-------+----------+----------+--------------+
+|   16  | 0.231 |  0.911   |  0.486   |    0.794     |
++-------+-------+----------+----------+--------------+
+
+================================================================================2020-05-09 18:01:12
+{&#39;step&#39;: 200, &#39;loss&#39;: 0.21, &#39;accuracy&#39;: 0.919}
+{&#39;step&#39;: 400, &#39;loss&#39;: 0.22, &#39;accuracy&#39;: 0.915}
+{&#39;step&#39;: 600, &#39;loss&#39;: 0.22, &#39;accuracy&#39;: 0.915}
+{&#39;step&#39;: 800, &#39;loss&#39;: 0.22, &#39;accuracy&#39;: 0.916}
+{&#39;step&#39;: 1000, &#39;loss&#39;: 0.22, &#39;accuracy&#39;: 0.916}
+
+ +-------+------+----------+----------+--------------+
+| epoch | loss | accuracy | val_loss | val_accuracy |
++-------+------+----------+----------+--------------+
+|   17  | 0.22 |  0.916   |  0.486   |    0.796     |
++-------+------+----------+----------+--------------+
+
+================================================================================2020-05-09 18:02:24
+{&#39;step&#39;: 200, &#39;loss&#39;: 0.206, &#39;accuracy&#39;: 0.927}
+{&#39;step&#39;: 400, &#39;loss&#39;: 0.21, &#39;accuracy&#39;: 0.923}
+{&#39;step&#39;: 600, &#39;loss&#39;: 0.21, &#39;accuracy&#39;: 0.924}
+{&#39;step&#39;: 800, &#39;loss&#39;: 0.213, &#39;accuracy&#39;: 0.922}
+{&#39;step&#39;: 1000, &#39;loss&#39;: 0.21, &#39;accuracy&#39;: 0.923}
+
+ +-------+------+----------+----------+--------------+
+| epoch | loss | accuracy | val_loss | val_accuracy |
++-------+------+----------+----------+--------------+
+|   18  | 0.21 |  0.923   |  0.493   |    0.796     |
++-------+------+----------+----------+--------------+
+
+================================================================================2020-05-09 18:02:53
+{&#39;step&#39;: 200, &#39;loss&#39;: 0.191, &#39;accuracy&#39;: 0.932}
+{&#39;step&#39;: 400, &#39;loss&#39;: 0.197, &#39;accuracy&#39;: 0.926}
+{&#39;step&#39;: 600, &#39;loss&#39;: 0.199, &#39;accuracy&#39;: 0.928}
+{&#39;step&#39;: 800, &#39;loss&#39;: 0.199, &#39;accuracy&#39;: 0.927}
+{&#39;step&#39;: 1000, &#39;loss&#39;: 0.2, &#39;accuracy&#39;: 0.927}
+
+ +-------+------+----------+----------+--------------+
+| epoch | loss | accuracy | val_loss | val_accuracy |
++-------+------+----------+----------+--------------+
+|   19  | 0.2  |  0.927   |   0.5    |    0.794     |
++-------+------+----------+----------+--------------+
+
+================================================================================2020-05-09 18:03:22
+{&#39;step&#39;: 200, &#39;loss&#39;: 0.19, &#39;accuracy&#39;: 0.934}
+{&#39;step&#39;: 400, &#39;loss&#39;: 0.192, &#39;accuracy&#39;: 0.931}
+{&#39;step&#39;: 600, &#39;loss&#39;: 0.195, &#39;accuracy&#39;: 0.929}
+{&#39;step&#39;: 800, &#39;loss&#39;: 0.194, &#39;accuracy&#39;: 0.93}
+{&#39;step&#39;: 1000, &#39;loss&#39;: 0.191, &#39;accuracy&#39;: 0.931}
+
+ +-------+-------+----------+----------+--------------+
+| epoch |  loss | accuracy | val_loss | val_accuracy |
++-------+-------+----------+----------+--------------+
+|   20  | 0.191 |  0.931   |  0.506   |    0.795     |
++-------+-------+----------+----------+--------------+
+
+================================================================================2020-05-09 18:03:58
+Finished Training...
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code>
+</code></pre></div>
+
+<h3 id="四评估模型">四，评估模型<a class="headerlink" href="#四评估模型" title="Permanent link">#</a></h3>
+<div class="highlight"><pre><span></span><code><span class="o">%</span><span class="n">matplotlib</span> <span class="n">inline</span>
+<span class="o">%</span><span class="n">config</span> <span class="n">InlineBackend</span><span class="o">.</span><span class="n">figure_format</span> <span class="o">=</span> <span class="s1">&#39;svg&#39;</span>
+
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+<span class="k">def</span> <span class="nf">plot_metric</span><span class="p">(</span><span class="n">dfhistory</span><span class="p">,</span> <span class="n">metric</span><span class="p">):</span>
+    <span class="n">train_metrics</span> <span class="o">=</span> <span class="n">dfhistory</span><span class="p">[</span><span class="n">metric</span><span class="p">]</span>
+    <span class="n">val_metrics</span> <span class="o">=</span> <span class="n">dfhistory</span><span class="p">[</span><span class="s1">&#39;val_&#39;</span><span class="o">+</span><span class="n">metric</span><span class="p">]</span>
+    <span class="n">epochs</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">train_metrics</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">epochs</span><span class="p">,</span> <span class="n">train_metrics</span><span class="p">,</span> <span class="s1">&#39;bo--&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">epochs</span><span class="p">,</span> <span class="n">val_metrics</span><span class="p">,</span> <span class="s1">&#39;ro-&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Training and validation &#39;</span><span class="o">+</span> <span class="n">metric</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Epochs&quot;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="n">metric</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">([</span><span class="s2">&quot;train_&quot;</span><span class="o">+</span><span class="n">metric</span><span class="p">,</span> <span class="s1">&#39;val_&#39;</span><span class="o">+</span><span class="n">metric</span><span class="p">])</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code><span class="n">plot_metric</span><span class="p">(</span><span class="n">dfhistory</span><span class="p">,</span><span class="s2">&quot;loss&quot;</span><span class="p">)</span>
+</code></pre></div>
+
+<p><img alt="" src="../../data/1-3-loss%E6%9B%B2%E7%BA%BF.png" /></p>
+<div class="highlight"><pre><span></span><code><span class="n">plot_metric</span><span class="p">(</span><span class="n">dfhistory</span><span class="p">,</span><span class="s2">&quot;accuracy&quot;</span><span class="p">)</span>
+</code></pre></div>
+
+<p><img alt="" src="../../data/1-3-accuracy%E6%9B%B2%E7%BA%BF.png" /></p>
+<div class="highlight"><pre><span></span><code><span class="c1"># 评估</span>
+<span class="n">model</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">dl_test</span><span class="p">)</span>
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code>{&#39;val_loss&#39;: 0.5056138457655907, &#39;val_accuracy&#39;: 0.7948000040054322}
+</code></pre></div>
+
+<h3 id="五使用模型">五，使用模型<a class="headerlink" href="#五使用模型" title="Permanent link">#</a></h3>
+<div class="highlight"><pre><span></span><code><span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">dl_test</span><span class="p">)</span>
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code>tensor([[3.9803e-02],
+        [9.9295e-01],
+        [6.0493e-01],
+        ...,
+        [1.2023e-01],
+        [9.3701e-01],
+        [2.5752e-04]])
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code>
+</code></pre></div>
+
+<h3 id="六保存模型">六，保存模型<a class="headerlink" href="#六保存模型" title="Permanent link">#</a></h3>
+<p>推荐使用保存参数方式保存Pytorch模型。</p>
+<div class="highlight"><pre><span></span><code><span class="nb">print</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">state_dict</span><span class="p">()</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code>odict_keys([&#39;embedding.weight&#39;, &#39;conv.conv_1.weight&#39;, &#39;conv.conv_1.bias&#39;, &#39;conv.conv_2.weight&#39;, &#39;conv.conv_2.bias&#39;, &#39;dense.linear.weight&#39;, &#39;dense.linear.bias&#39;])
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code><span class="c1"># 保存模型参数</span>
+
+<span class="n">torch</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">state_dict</span><span class="p">(),</span> <span class="s2">&quot;../data/model_parameter.pkl&quot;</span><span class="p">)</span>
+
+<span class="n">model_clone</span> <span class="o">=</span> <span class="n">Net</span><span class="p">()</span>
+<span class="n">model_clone</span><span class="o">.</span><span class="n">load_state_dict</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;../data/model_parameter.pkl&quot;</span><span class="p">))</span>
+
+<span class="n">model_clone</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">loss_func</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">BCELoss</span><span class="p">(),</span><span class="n">optimizer</span><span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">Adagrad</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span><span class="n">lr</span> <span class="o">=</span> <span class="mf">0.02</span><span class="p">),</span>
+             <span class="n">metrics_dict</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;accuracy&quot;</span><span class="p">:</span><span class="n">accuracy</span><span class="p">})</span>
+
+<span class="c1"># 评估模型</span>
+<span class="n">model_clone</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">dl_test</span><span class="p">)</span>
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code>{&#39;val_loss&#39;: 0.5056138457655907, &#39;val_accuracy&#39;: 0.7948000040054322}
+</code></pre></div>
+
+<p>如果对本书内容理解上有需要进一步和作者交流的地方，欢迎在公众号"Python与算法之美"下留言。作者时间和精力有限，会酌情予以回复。</p>
+<p>也可以在公众号后台回复关键字：<strong>加群</strong>，加入读者交流群和大家讨论。</p>
+<p><img alt="image.png" src="../../data/Python%E4%B8%8E%E7%AE%97%E6%B3%95%E4%B9%8B%E7%BE%8Elogo.jpg" /></p>
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+      </main>
+      
+        
+<footer class="md-footer">
+  
+    <div class="md-footer-nav">
+      <nav class="md-footer-nav__inner md-grid" aria-label="Footer">
+        
+          <a href="../1-2%2C%E5%9B%BE%E7%89%87%E6%95%B0%E6%8D%AE%E5%BB%BA%E6%A8%A1%E6%B5%81%E7%A8%8B%E8%8C%83%E4%BE%8B/" title="1-2,图片数据建模流程范例" class="md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+            <div class="md-footer-nav__button md-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+            </div>
+            <div class="md-footer-nav__title">
+              <div class="md-ellipsis">
+                <span class="md-footer-nav__direction">
+                  上一页
+                </span>
+                1-2,图片数据建模流程范例
+              </div>
+            </div>
+          </a>
+        
+        
+          <a href="../1-4%2C%E6%97%B6%E9%97%B4%E5%BA%8F%E5%88%97%E6%95%B0%E6%8D%AE%E5%BB%BA%E6%A8%A1%E6%B5%81%E7%A8%8B%E8%8C%83%E4%BE%8B/" title="1-4,时间序列数据建模流程范例" class="md-footer-nav__link md-footer-nav__link--next" rel="next">
+            <div class="md-footer-nav__title">
+              <div class="md-ellipsis">
+                <span class="md-footer-nav__direction">
+                  下一页
+                </span>
+                1-4,时间序列数据建模流程范例
+              </div>
+            </div>
+            <div class="md-footer-nav__button md-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    </div>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+        Made with
+        <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+          Material for MkDocs
+        </a>
+      </div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    
+      <script src="../../assets/javascripts/vendor.2d1db4bd.min.js"></script>
+      <script src="../../assets/javascripts/bundle.6627ddf3.min.js"></script><script id="__lang" type="application/json">{"clipboard.copy": "\u590d\u5236", "clipboard.copied": "\u5df2\u590d\u5236", "search.config.lang": "ja", "search.config.pipeline": "trimmer, stemmer", "search.config.separator": "[\\uff0c\\u3002]+", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c"}</script>
+      
+      <script>
+        app = initialize({
+          base: "../..",
+          features: ['navigation.expand'],
+          search: Object.assign({
+            worker: "../../assets/javascripts/worker/search.5eca75d3.min.js"
+          }, typeof search !== "undefined" && search)
+        })
+      </script>
+      
+    
+  </body>
+</html>

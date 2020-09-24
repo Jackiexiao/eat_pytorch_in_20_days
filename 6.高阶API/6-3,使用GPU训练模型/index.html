@@ -1,0 +1,1573 @@
+
+
+
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      <link rel="shortcut icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-5.5.14">
+    
+    
+      
+        <title>6-3,使用GPU训练模型 - 20天吃掉那只Pytorch</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.d3202873.min.css">
+      
+      
+    
+    
+    
+      
+        <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
+        <style>body,input{font-family:"Roboto",-apple-system,BlinkMacSystemFont,Helvetica,Arial,sans-serif}code,kbd,pre{font-family:"Roboto Mono",SFMono-Regular,Consolas,Menlo,monospace}</style>
+      
+    
+    
+    
+    
+      
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#6-3使用gpu训练模型" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <header class="md-header" data-md-component="header">
+  <nav class="md-header-nav md-grid" aria-label="Header">
+    <a href="../.." title="20天吃掉那只Pytorch" class="md-header-nav__button md-logo" aria-label="20天吃掉那只Pytorch">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 003-3 3 3 0 00-3-3 3 3 0 00-3 3 3 3 0 003 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    <label class="md-header-nav__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+    </label>
+    <div class="md-header-nav__title" data-md-component="header-title">
+      
+        <div class="md-header-nav__ellipsis">
+          <span class="md-header-nav__topic md-ellipsis">
+            20天吃掉那只Pytorch
+          </span>
+          <span class="md-header-nav__topic md-ellipsis">
+            
+              6-3,使用GPU训练模型
+            
+          </span>
+        </div>
+      
+    </div>
+    
+      <label class="md-header-nav__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0116 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 019.5 16 6.5 6.5 0 013 9.5 6.5 6.5 0 019.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+      </label>
+      
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="搜索" placeholder="搜索" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" data-md-state="active">
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0116 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 019.5 16 6.5 6.5 0 013 9.5 6.5 6.5 0 019.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </label>
+      <button type="reset" class="md-search__icon md-icon" aria-label="Clear" data-md-component="search-reset" tabindex="-1">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header-nav__source">
+        
+<a href="https://github.com/lyhue1991/eat_pytorch_in_20_days/" title="前往 GitHub 仓库" class="md-source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M439.55 236.05L244 40.45a28.87 28.87 0 00-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 01-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 000 40.81l195.61 195.6a28.86 28.86 0 0040.8 0l194.69-194.69a28.86 28.86 0 000-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+        
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              <div class="md-sidebar md-sidebar--primary" data-md-component="navigation">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="20天吃掉那只Pytorch" class="md-nav__button md-logo" aria-label="20天吃掉那只Pytorch">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 003-3 3 3 0 00-3-3 3 3 0 00-3 3 3 3 0 003 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    20天吃掉那只Pytorch
+  </label>
+  
+    <div class="md-nav__source">
+      
+<a href="https://github.com/lyhue1991/eat_pytorch_in_20_days/" title="前往 GitHub 仓库" class="md-source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M439.55 236.05L244 40.45a28.87 28.87 0 00-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 01-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 000 40.81l195.61 195.6a28.86 28.86 0 0040.8 0l194.69-194.69a28.86 28.86 0 000-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../.." title="How to eat Pytorch in 20 days ?🔥🔥" class="md-nav__link">
+      How to eat Pytorch in 20 days ?🔥🔥
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-2" type="checkbox" id="nav-2">
+    
+    <label class="md-nav__link" for="nav-2">
+      1.建模流程
+      <span class="md-nav__icon md-icon"></span>
+    </label>
+    <nav class="md-nav" aria-label="1.建模流程" data-md-level="1">
+      <label class="md-nav__title" for="nav-2">
+        <span class="md-nav__icon md-icon"></span>
+        1.建模流程
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../1.%E5%BB%BA%E6%A8%A1%E6%B5%81%E7%A8%8B/" title="一、Pytorch的建模流程" class="md-nav__link">
+      一、Pytorch的建模流程
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../1.%E5%BB%BA%E6%A8%A1%E6%B5%81%E7%A8%8B/1-1%2C%E7%BB%93%E6%9E%84%E5%8C%96%E6%95%B0%E6%8D%AE%E5%BB%BA%E6%A8%A1%E6%B5%81%E7%A8%8B%E8%8C%83%E4%BE%8B/" title="1-1,结构化数据建模流程范例" class="md-nav__link">
+      1-1,结构化数据建模流程范例
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../1.%E5%BB%BA%E6%A8%A1%E6%B5%81%E7%A8%8B/1-2%2C%E5%9B%BE%E7%89%87%E6%95%B0%E6%8D%AE%E5%BB%BA%E6%A8%A1%E6%B5%81%E7%A8%8B%E8%8C%83%E4%BE%8B/" title="1-2,图片数据建模流程范例" class="md-nav__link">
+      1-2,图片数据建模流程范例
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../1.%E5%BB%BA%E6%A8%A1%E6%B5%81%E7%A8%8B/1-3%2C%E6%96%87%E6%9C%AC%E6%95%B0%E6%8D%AE%E5%BB%BA%E6%A8%A1%E6%B5%81%E7%A8%8B%E8%8C%83%E4%BE%8B/" title="1-3,文本数据建模流程范例" class="md-nav__link">
+      1-3,文本数据建模流程范例
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../1.%E5%BB%BA%E6%A8%A1%E6%B5%81%E7%A8%8B/1-4%2C%E6%97%B6%E9%97%B4%E5%BA%8F%E5%88%97%E6%95%B0%E6%8D%AE%E5%BB%BA%E6%A8%A1%E6%B5%81%E7%A8%8B%E8%8C%83%E4%BE%8B/" title="1-4,时间序列数据建模流程范例" class="md-nav__link">
+      1-4,时间序列数据建模流程范例
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-3" type="checkbox" id="nav-3">
+    
+    <label class="md-nav__link" for="nav-3">
+      2.核心概念
+      <span class="md-nav__icon md-icon"></span>
+    </label>
+    <nav class="md-nav" aria-label="2.核心概念" data-md-level="1">
+      <label class="md-nav__title" for="nav-3">
+        <span class="md-nav__icon md-icon"></span>
+        2.核心概念
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../2.%E6%A0%B8%E5%BF%83%E6%A6%82%E5%BF%B5/" title="二、Pytorch的核心概念" class="md-nav__link">
+      二、Pytorch的核心概念
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../2.%E6%A0%B8%E5%BF%83%E6%A6%82%E5%BF%B5/2-1%2C%E5%BC%A0%E9%87%8F%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" title="2-1,张量数据结构" class="md-nav__link">
+      2-1,张量数据结构
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../2.%E6%A0%B8%E5%BF%83%E6%A6%82%E5%BF%B5/2-2%2C%E8%87%AA%E5%8A%A8%E5%BE%AE%E5%88%86%E6%9C%BA%E5%88%B6/" title="2-2,自动微分机制" class="md-nav__link">
+      2-2,自动微分机制
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../2.%E6%A0%B8%E5%BF%83%E6%A6%82%E5%BF%B5/2-3%2C%E5%8A%A8%E6%80%81%E8%AE%A1%E7%AE%97%E5%9B%BE/" title="2-3,动态计算图" class="md-nav__link">
+      2-3,动态计算图
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-4" type="checkbox" id="nav-4">
+    
+    <label class="md-nav__link" for="nav-4">
+      3.层次结构
+      <span class="md-nav__icon md-icon"></span>
+    </label>
+    <nav class="md-nav" aria-label="3.层次结构" data-md-level="1">
+      <label class="md-nav__title" for="nav-4">
+        <span class="md-nav__icon md-icon"></span>
+        3.层次结构
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../3.%E5%B1%82%E6%AC%A1%E7%BB%93%E6%9E%84/" title="三、Pytorch的层次结构" class="md-nav__link">
+      三、Pytorch的层次结构
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../3.%E5%B1%82%E6%AC%A1%E7%BB%93%E6%9E%84/3-1%2C%E4%BD%8E%E9%98%B6API%E7%A4%BA%E8%8C%83/" title="3-1,低阶API示范" class="md-nav__link">
+      3-1,低阶API示范
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../3.%E5%B1%82%E6%AC%A1%E7%BB%93%E6%9E%84/3-2%2C%E4%B8%AD%E9%98%B6API%E7%A4%BA%E8%8C%83/" title="3-2,中阶API示范" class="md-nav__link">
+      3-2,中阶API示范
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../3.%E5%B1%82%E6%AC%A1%E7%BB%93%E6%9E%84/3-3%2C%E9%AB%98%E9%98%B6API%E7%A4%BA%E8%8C%83/" title="3-3,高阶API示范" class="md-nav__link">
+      3-3,高阶API示范
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-5" type="checkbox" id="nav-5">
+    
+    <label class="md-nav__link" for="nav-5">
+      4.低阶API
+      <span class="md-nav__icon md-icon"></span>
+    </label>
+    <nav class="md-nav" aria-label="4.低阶API" data-md-level="1">
+      <label class="md-nav__title" for="nav-5">
+        <span class="md-nav__icon md-icon"></span>
+        4.低阶API
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../4.%E4%BD%8E%E9%98%B6API/" title="四、Pytorch的低阶API" class="md-nav__link">
+      四、Pytorch的低阶API
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../4.%E4%BD%8E%E9%98%B6API/4-1%2C%E5%BC%A0%E9%87%8F%E7%9A%84%E7%BB%93%E6%9E%84%E6%93%8D%E4%BD%9C/" title="4-1,张量的结构操作" class="md-nav__link">
+      4-1,张量的结构操作
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../4.%E4%BD%8E%E9%98%B6API/4-2%2C%E5%BC%A0%E9%87%8F%E7%9A%84%E6%95%B0%E5%AD%A6%E8%BF%90%E7%AE%97/" title="4-2,张量的数学运算" class="md-nav__link">
+      4-2,张量的数学运算
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../4.%E4%BD%8E%E9%98%B6API/4-3%2Cnn.functional%E5%92%8Cnn.Module/" title="4-3,nn.functional 和 nn.Module" class="md-nav__link">
+      4-3,nn.functional 和 nn.Module
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-6" type="checkbox" id="nav-6">
+    
+    <label class="md-nav__link" for="nav-6">
+      5.中阶API
+      <span class="md-nav__icon md-icon"></span>
+    </label>
+    <nav class="md-nav" aria-label="5.中阶API" data-md-level="1">
+      <label class="md-nav__title" for="nav-6">
+        <span class="md-nav__icon md-icon"></span>
+        5.中阶API
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../5.%E4%B8%AD%E9%98%B6API/" title="五、Pytorch的中阶API" class="md-nav__link">
+      五、Pytorch的中阶API
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../5.%E4%B8%AD%E9%98%B6API/5-1%2CDataset%E5%92%8CDataLoader/" title="5-1, Dataset和DataLoader" class="md-nav__link">
+      5-1, Dataset和DataLoader
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../5.%E4%B8%AD%E9%98%B6API/5-2%2C%E6%A8%A1%E5%9E%8B%E5%B1%82/" title="5-2,模型层layers" class="md-nav__link">
+      5-2,模型层layers
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../5.%E4%B8%AD%E9%98%B6API/5-3%2C%E6%8D%9F%E5%A4%B1%E5%87%BD%E6%95%B0/" title="5-5,损失函数losses" class="md-nav__link">
+      5-5,损失函数losses
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../5.%E4%B8%AD%E9%98%B6API/5-4%2CTensorBoard%E5%8F%AF%E8%A7%86%E5%8C%96/" title="5-4,TensorBoard可视化" class="md-nav__link">
+      5-4,TensorBoard可视化
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+  
+
+
+  <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-7" type="checkbox" id="nav-7" checked>
+    
+    <label class="md-nav__link" for="nav-7">
+      6.高阶API
+      <span class="md-nav__icon md-icon"></span>
+    </label>
+    <nav class="md-nav" aria-label="6.高阶API" data-md-level="1">
+      <label class="md-nav__title" for="nav-7">
+        <span class="md-nav__icon md-icon"></span>
+        6.高阶API
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../" title="六、Pytorch的高阶API" class="md-nav__link">
+      六、Pytorch的高阶API
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../6-1%2C%E6%9E%84%E5%BB%BA%E6%A8%A1%E5%9E%8B%E7%9A%843%E7%A7%8D%E6%96%B9%E6%B3%95/" title="6-1,构建模型的3种方法" class="md-nav__link">
+      6-1,构建模型的3种方法
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../6-2%2C%E8%AE%AD%E7%BB%83%E6%A8%A1%E5%9E%8B%E7%9A%843%E7%A7%8D%E6%96%B9%E6%B3%95/" title="6-2,训练模型的3种方法" class="md-nav__link">
+      6-2,训练模型的3种方法
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+  
+
+
+  <li class="md-nav__item md-nav__item--active">
+    
+    <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+    
+      
+    
+    
+      <label class="md-nav__link md-nav__link--active" for="__toc">
+        6-3,使用GPU训练模型
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+    
+    <a href="./" title="6-3,使用GPU训练模型" class="md-nav__link md-nav__link--active">
+      6-3,使用GPU训练模型
+    </a>
+    
+      
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#一矩阵乘法范例" class="md-nav__link">
+    一，矩阵乘法范例
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#二线性回归范例" class="md-nav__link">
+    二，线性回归范例
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#三torchkeras使用单gpu范例" class="md-nav__link">
+    三，torchkeras使用单GPU范例
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#四torchkeras使用多gpu范例" class="md-nav__link">
+    四，torchkeras使用多GPU范例
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+    
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="toc">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#一矩阵乘法范例" class="md-nav__link">
+    一，矩阵乘法范例
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#二线性回归范例" class="md-nav__link">
+    二，线性回归范例
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#三torchkeras使用单gpu范例" class="md-nav__link">
+    三，torchkeras使用单GPU范例
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#四torchkeras使用多gpu范例" class="md-nav__link">
+    四，torchkeras使用多GPU范例
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                  <a href="https://github.com/lyhue1991/eat_pytorch_in_20_days/edit/master/docs/6.高阶API/6-3,使用GPU训练模型.md" title="编辑此页" class="md-content__button md-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25z"/></svg>
+                  </a>
+                
+                
+                  
+                
+                
+                <h1 id="6-3使用gpu训练模型">6-3,使用GPU训练模型<a class="headerlink" href="#6-3使用gpu训练模型" title="Permanent link">#</a></h1>
+<p>深度学习的训练过程常常非常耗时，一个模型训练几个小时是家常便饭，训练几天也是常有的事情，有时候甚至要训练几十天。</p>
+<p>训练过程的耗时主要来自于两个部分，一部分来自数据准备，另一部分来自参数迭代。</p>
+<p>当数据准备过程还是模型训练时间的主要瓶颈时，我们可以使用更多进程来准备数据。</p>
+<p>当参数迭代过程成为训练时间的主要瓶颈时，我们通常的方法是应用GPU来进行加速。</p>
+<!-- #region -->
+
+<p>Pytorch中使用GPU加速模型非常简单，只要将模型和数据移动到GPU上。核心代码只有以下几行。</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># 定义模型</span>
+<span class="o">...</span> 
+
+<span class="n">device</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">(</span><span class="s2">&quot;cuda:0&quot;</span> <span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">is_available</span><span class="p">()</span> <span class="k">else</span> <span class="s2">&quot;cpu&quot;</span><span class="p">)</span>
+<span class="n">model</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span> <span class="c1"># 移动模型到cuda</span>
+
+<span class="c1"># 训练模型</span>
+<span class="o">...</span>
+
+<span class="n">features</span> <span class="o">=</span> <span class="n">features</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span> <span class="c1"># 移动数据到cuda</span>
+<span class="n">labels</span> <span class="o">=</span> <span class="n">labels</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span> <span class="c1"># 或者  labels = labels.cuda() if torch.cuda.is_available() else labels</span>
+<span class="o">...</span>
+</code></pre></div>
+
+<p>如果要使用多个GPU训练模型，也非常简单。只需要在将模型设置为数据并行风格模型。<br />
+则模型移动到GPU上之后，会在每一个GPU上拷贝一个副本，并把数据平分到各个GPU上进行训练。核心代码如下。</p>
+<p><div class="highlight"><pre><span></span><code><span class="c1"># 定义模型</span>
+<span class="o">...</span> 
+
+<span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">device_count</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">DataParallel</span><span class="p">(</span><span class="n">model</span><span class="p">)</span> <span class="c1"># 包装为并行风格模型</span>
+
+<span class="c1"># 训练模型</span>
+<span class="o">...</span>
+<span class="n">features</span> <span class="o">=</span> <span class="n">features</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span> <span class="c1"># 移动数据到cuda</span>
+<span class="n">labels</span> <span class="o">=</span> <span class="n">labels</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span> <span class="c1"># 或者 labels = labels.cuda() if torch.cuda.is_available() else labels</span>
+<span class="o">...</span>
+</code></pre></div><br />
+<!-- #endregion --></p>
+<p><strong>以下是一些和GPU有关的基本操作汇总</strong> </p>
+<p>在Colab笔记本中：修改-&gt;笔记本设置-&gt;硬件加速器 中选择 GPU</p>
+<p>注：以下代码只能在Colab 上才能正确执行。</p>
+<p>可点击如下链接，直接在colab中运行范例代码。</p>
+<p>《torch使用gpu训练模型》</p>
+<p><a href="https://colab.research.google.com/drive/1FDmi44-U3TFRCt9MwGn4HIj2SaaWIjHu?usp=sharing">https://colab.research.google.com/drive/1FDmi44-U3TFRCt9MwGn4HIj2SaaWIjHu?usp=sharing</a></p>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">torch</span> 
+<span class="kn">from</span> <span class="nn">torch</span> <span class="kn">import</span> <span class="n">nn</span> 
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code><span class="c1"># 1，查看gpu信息</span>
+<span class="n">if_cuda</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">is_available</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;if_cuda=&quot;</span><span class="p">,</span><span class="n">if_cuda</span><span class="p">)</span>
+
+<span class="n">gpu_count</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">device_count</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;gpu_count=&quot;</span><span class="p">,</span><span class="n">gpu_count</span><span class="p">)</span>
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code>if_cuda= True
+gpu_count= 1
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code><span class="c1"># 2，将张量在gpu和cpu间移动</span>
+<span class="n">tensor</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">rand</span><span class="p">((</span><span class="mi">100</span><span class="p">,</span><span class="mi">100</span><span class="p">))</span>
+<span class="n">tensor_gpu</span> <span class="o">=</span> <span class="n">tensor</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="s2">&quot;cuda:0&quot;</span><span class="p">)</span> <span class="c1"># 或者 tensor_gpu = tensor.cuda()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">tensor_gpu</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">tensor_gpu</span><span class="o">.</span><span class="n">is_cuda</span><span class="p">)</span>
+
+<span class="n">tensor_cpu</span> <span class="o">=</span> <span class="n">tensor_gpu</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="s2">&quot;cpu&quot;</span><span class="p">)</span> <span class="c1"># 或者 tensor_cpu = tensor_gpu.cpu() </span>
+<span class="nb">print</span><span class="p">(</span><span class="n">tensor_cpu</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code>cuda:0
+True
+cpu
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code><span class="c1"># 3，将模型中的全部张量移动到gpu上</span>
+<span class="n">net</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">next</span><span class="p">(</span><span class="n">net</span><span class="o">.</span><span class="n">parameters</span><span class="p">())</span><span class="o">.</span><span class="n">is_cuda</span><span class="p">)</span>
+<span class="n">net</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="s2">&quot;cuda:0&quot;</span><span class="p">)</span> <span class="c1"># 将模型中的全部参数张量依次到GPU上，注意，无需重新赋值为 net = net.to(&quot;cuda:0&quot;)</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">next</span><span class="p">(</span><span class="n">net</span><span class="o">.</span><span class="n">parameters</span><span class="p">())</span><span class="o">.</span><span class="n">is_cuda</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">next</span><span class="p">(</span><span class="n">net</span><span class="o">.</span><span class="n">parameters</span><span class="p">())</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code>False
+True
+cuda:0
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code><span class="c1"># 4，创建支持多个gpu数据并行的模型</span>
+<span class="n">linear</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">next</span><span class="p">(</span><span class="n">linear</span><span class="o">.</span><span class="n">parameters</span><span class="p">())</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+
+<span class="n">model</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">DataParallel</span><span class="p">(</span><span class="n">linear</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">device_ids</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">next</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">module</span><span class="o">.</span><span class="n">parameters</span><span class="p">())</span><span class="o">.</span><span class="n">device</span><span class="p">)</span> 
+
+<span class="c1">#注意保存参数时要指定保存model.module的参数</span>
+<span class="n">torch</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">module</span><span class="o">.</span><span class="n">state_dict</span><span class="p">(),</span> <span class="s2">&quot;../data/model_parameter.pkl&quot;</span><span class="p">)</span> 
+
+<span class="n">linear</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">linear</span><span class="o">.</span><span class="n">load_state_dict</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;../data/model_parameter.pkl&quot;</span><span class="p">))</span> 
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code>cpu
+[0]
+cuda:0
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code><span class="c1"># 5，清空cuda缓存</span>
+
+<span class="c1"># 该方法在cuda超内存时十分有用</span>
+<span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">empty_cache</span><span class="p">()</span>
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code>
+</code></pre></div>
+
+<h3 id="一矩阵乘法范例">一，矩阵乘法范例<a class="headerlink" href="#一矩阵乘法范例" title="Permanent link">#</a></h3>
+<p>下面分别使用CPU和GPU作一个矩阵乘法，并比较其计算效率。</p>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">torch</span> 
+<span class="kn">from</span> <span class="nn">torch</span> <span class="kn">import</span> <span class="n">nn</span>
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code><span class="c1"># 使用cpu</span>
+<span class="n">a</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">rand</span><span class="p">((</span><span class="mi">10000</span><span class="p">,</span><span class="mi">200</span><span class="p">))</span>
+<span class="n">b</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">rand</span><span class="p">((</span><span class="mi">200</span><span class="p">,</span><span class="mi">10000</span><span class="p">))</span>
+<span class="n">tic</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+<span class="n">c</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">)</span>
+<span class="n">toc</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">toc</span><span class="o">-</span><span class="n">tic</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">b</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code>0.6454010009765625
+cpu
+cpu
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code><span class="c1"># 使用gpu</span>
+<span class="n">device</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">(</span><span class="s2">&quot;cuda:0&quot;</span> <span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">is_available</span><span class="p">()</span> <span class="k">else</span> <span class="s2">&quot;cpu&quot;</span><span class="p">)</span>
+<span class="n">a</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">rand</span><span class="p">((</span><span class="mi">10000</span><span class="p">,</span><span class="mi">200</span><span class="p">),</span><span class="n">device</span> <span class="o">=</span> <span class="n">device</span><span class="p">)</span> <span class="c1">#可以指定在GPU上创建张量</span>
+<span class="n">b</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">rand</span><span class="p">((</span><span class="mi">200</span><span class="p">,</span><span class="mi">10000</span><span class="p">))</span> <span class="c1">#也可以在CPU上创建张量后移动到GPU上</span>
+<span class="n">b</span> <span class="o">=</span> <span class="n">b</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span> <span class="c1">#或者 b = b.cuda() if torch.cuda.is_available() else b </span>
+<span class="n">tic</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+<span class="n">c</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">)</span>
+<span class="n">toc</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">toc</span><span class="o">-</span><span class="n">tic</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">b</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code>0.014541149139404297
+cuda:0
+cuda:0
+</code></pre></div>
+
+<h3 id="二线性回归范例">二，线性回归范例<a class="headerlink" href="#二线性回归范例" title="Permanent link">#</a></h3>
+<p>下面对比使用CPU和GPU训练一个线性回归模型的效率</p>
+<p><strong>1，使用CPU</strong></p>
+<div class="highlight"><pre><span></span><code><span class="c1"># 准备数据</span>
+<span class="n">n</span> <span class="o">=</span> <span class="mi">1000000</span> <span class="c1">#样本数量</span>
+
+<span class="n">X</span> <span class="o">=</span> <span class="mi">10</span><span class="o">*</span><span class="n">torch</span><span class="o">.</span><span class="n">rand</span><span class="p">([</span><span class="n">n</span><span class="p">,</span><span class="mi">2</span><span class="p">])</span><span class="o">-</span><span class="mf">5.0</span>  <span class="c1">#torch.rand是均匀分布 </span>
+<span class="n">w0</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([[</span><span class="mf">2.0</span><span class="p">,</span><span class="o">-</span><span class="mf">3.0</span><span class="p">]])</span>
+<span class="n">b0</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([[</span><span class="mf">10.0</span><span class="p">]])</span>
+<span class="n">Y</span> <span class="o">=</span> <span class="n">X</span><span class="nd">@w0</span><span class="o">.</span><span class="n">t</span><span class="p">()</span> <span class="o">+</span> <span class="n">b0</span> <span class="o">+</span> <span class="n">torch</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span> <span class="mf">0.0</span><span class="p">,</span><span class="mf">2.0</span><span class="p">,</span><span class="n">size</span> <span class="o">=</span> <span class="p">[</span><span class="n">n</span><span class="p">,</span><span class="mi">1</span><span class="p">])</span>  <span class="c1"># @表示矩阵乘法,增加正态扰动</span>
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code><span class="c1"># 定义模型</span>
+<span class="k">class</span> <span class="nc">LinearRegression</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span> 
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">w</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Parameter</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">randn_like</span><span class="p">(</span><span class="n">w0</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">b</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Parameter</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">b0</span><span class="p">))</span>
+    <span class="c1">#正向传播</span>
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">x</span><span class="p">):</span> 
+        <span class="k">return</span> <span class="n">x</span><span class="nd">@self</span><span class="o">.</span><span class="n">w</span><span class="o">.</span><span class="n">t</span><span class="p">()</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">b</span>
+
+<span class="n">linear</span> <span class="o">=</span> <span class="n">LinearRegression</span><span class="p">()</span> 
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code><span class="c1"># 训练模型</span>
+<span class="n">optimizer</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">Adam</span><span class="p">(</span><span class="n">linear</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span><span class="n">lr</span> <span class="o">=</span> <span class="mf">0.1</span><span class="p">)</span>
+<span class="n">loss_func</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">MSELoss</span><span class="p">()</span>
+
+<span class="k">def</span> <span class="nf">train</span><span class="p">(</span><span class="n">epoches</span><span class="p">):</span>
+    <span class="n">tic</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">epoch</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">epoches</span><span class="p">):</span>
+        <span class="n">optimizer</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">()</span>
+        <span class="n">Y_pred</span> <span class="o">=</span> <span class="n">linear</span><span class="p">(</span><span class="n">X</span><span class="p">)</span> 
+        <span class="n">loss</span> <span class="o">=</span> <span class="n">loss_func</span><span class="p">(</span><span class="n">Y_pred</span><span class="p">,</span><span class="n">Y</span><span class="p">)</span>
+        <span class="n">loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span> 
+        <span class="n">optimizer</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">epoch</span><span class="o">%</span><span class="mi">50</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">({</span><span class="s2">&quot;epoch&quot;</span><span class="p">:</span><span class="n">epoch</span><span class="p">,</span><span class="s2">&quot;loss&quot;</span><span class="p">:</span><span class="n">loss</span><span class="o">.</span><span class="n">item</span><span class="p">()})</span>
+    <span class="n">toc</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;time used:&quot;</span><span class="p">,</span><span class="n">toc</span><span class="o">-</span><span class="n">tic</span><span class="p">)</span>
+
+<span class="n">train</span><span class="p">(</span><span class="mi">500</span><span class="p">)</span>
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code>{&#39;epoch&#39;: 0, &#39;loss&#39;: 3.996487855911255}
+{&#39;epoch&#39;: 50, &#39;loss&#39;: 3.9969770908355713}
+{&#39;epoch&#39;: 100, &#39;loss&#39;: 3.9964890480041504}
+{&#39;epoch&#39;: 150, &#39;loss&#39;: 3.996488332748413}
+{&#39;epoch&#39;: 200, &#39;loss&#39;: 3.996488094329834}
+{&#39;epoch&#39;: 250, &#39;loss&#39;: 3.996488332748413}
+{&#39;epoch&#39;: 300, &#39;loss&#39;: 3.996488332748413}
+{&#39;epoch&#39;: 350, &#39;loss&#39;: 3.996488094329834}
+{&#39;epoch&#39;: 400, &#39;loss&#39;: 3.996488332748413}
+{&#39;epoch&#39;: 450, &#39;loss&#39;: 3.996488094329834}
+time used: 5.4090576171875
+</code></pre></div>
+
+<p><strong>2，使用GPU</strong></p>
+<div class="highlight"><pre><span></span><code><span class="c1"># 准备数据</span>
+<span class="n">n</span> <span class="o">=</span> <span class="mi">1000000</span> <span class="c1">#样本数量</span>
+
+<span class="n">X</span> <span class="o">=</span> <span class="mi">10</span><span class="o">*</span><span class="n">torch</span><span class="o">.</span><span class="n">rand</span><span class="p">([</span><span class="n">n</span><span class="p">,</span><span class="mi">2</span><span class="p">])</span><span class="o">-</span><span class="mf">5.0</span>  <span class="c1">#torch.rand是均匀分布 </span>
+<span class="n">w0</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([[</span><span class="mf">2.0</span><span class="p">,</span><span class="o">-</span><span class="mf">3.0</span><span class="p">]])</span>
+<span class="n">b0</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([[</span><span class="mf">10.0</span><span class="p">]])</span>
+<span class="n">Y</span> <span class="o">=</span> <span class="n">X</span><span class="nd">@w0</span><span class="o">.</span><span class="n">t</span><span class="p">()</span> <span class="o">+</span> <span class="n">b0</span> <span class="o">+</span> <span class="n">torch</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span> <span class="mf">0.0</span><span class="p">,</span><span class="mf">2.0</span><span class="p">,</span><span class="n">size</span> <span class="o">=</span> <span class="p">[</span><span class="n">n</span><span class="p">,</span><span class="mi">1</span><span class="p">])</span>  <span class="c1"># @表示矩阵乘法,增加正态扰动</span>
+
+<span class="c1"># 移动到GPU上</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;torch.cuda.is_available() = &quot;</span><span class="p">,</span><span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">is_available</span><span class="p">())</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">cuda</span><span class="p">()</span>
+<span class="n">Y</span> <span class="o">=</span> <span class="n">Y</span><span class="o">.</span><span class="n">cuda</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;X.device:&quot;</span><span class="p">,</span><span class="n">X</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Y.device:&quot;</span><span class="p">,</span><span class="n">Y</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code>torch.cuda.is_available() =  True
+X.device: cuda:0
+Y.device: cuda:0
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code><span class="c1"># 定义模型</span>
+<span class="k">class</span> <span class="nc">LinearRegression</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span> 
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">w</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Parameter</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">randn_like</span><span class="p">(</span><span class="n">w0</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">b</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Parameter</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">b0</span><span class="p">))</span>
+    <span class="c1">#正向传播</span>
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">x</span><span class="p">):</span> 
+        <span class="k">return</span> <span class="n">x</span><span class="nd">@self</span><span class="o">.</span><span class="n">w</span><span class="o">.</span><span class="n">t</span><span class="p">()</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">b</span>
+
+<span class="n">linear</span> <span class="o">=</span> <span class="n">LinearRegression</span><span class="p">()</span> 
+
+<span class="c1"># 移动模型到GPU上</span>
+<span class="n">device</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">(</span><span class="s2">&quot;cuda:0&quot;</span> <span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">is_available</span><span class="p">()</span> <span class="k">else</span> <span class="s2">&quot;cpu&quot;</span><span class="p">)</span>
+<span class="n">linear</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+
+<span class="c1">#查看模型是否已经移动到GPU上</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;if on cuda:&quot;</span><span class="p">,</span><span class="nb">next</span><span class="p">(</span><span class="n">linear</span><span class="o">.</span><span class="n">parameters</span><span class="p">())</span><span class="o">.</span><span class="n">is_cuda</span><span class="p">)</span>
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code>if on cuda: True
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code><span class="c1"># 训练模型</span>
+<span class="n">optimizer</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">Adam</span><span class="p">(</span><span class="n">linear</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span><span class="n">lr</span> <span class="o">=</span> <span class="mf">0.1</span><span class="p">)</span>
+<span class="n">loss_func</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">MSELoss</span><span class="p">()</span>
+
+<span class="k">def</span> <span class="nf">train</span><span class="p">(</span><span class="n">epoches</span><span class="p">):</span>
+    <span class="n">tic</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">epoch</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">epoches</span><span class="p">):</span>
+        <span class="n">optimizer</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">()</span>
+        <span class="n">Y_pred</span> <span class="o">=</span> <span class="n">linear</span><span class="p">(</span><span class="n">X</span><span class="p">)</span> 
+        <span class="n">loss</span> <span class="o">=</span> <span class="n">loss_func</span><span class="p">(</span><span class="n">Y_pred</span><span class="p">,</span><span class="n">Y</span><span class="p">)</span>
+        <span class="n">loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span> 
+        <span class="n">optimizer</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">epoch</span><span class="o">%</span><span class="mi">50</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">({</span><span class="s2">&quot;epoch&quot;</span><span class="p">:</span><span class="n">epoch</span><span class="p">,</span><span class="s2">&quot;loss&quot;</span><span class="p">:</span><span class="n">loss</span><span class="o">.</span><span class="n">item</span><span class="p">()})</span>
+    <span class="n">toc</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;time used:&quot;</span><span class="p">,</span><span class="n">toc</span><span class="o">-</span><span class="n">tic</span><span class="p">)</span>
+
+<span class="n">train</span><span class="p">(</span><span class="mi">500</span><span class="p">)</span>
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code>{&#39;epoch&#39;: 0, &#39;loss&#39;: 3.9982845783233643}
+{&#39;epoch&#39;: 50, &#39;loss&#39;: 3.998818874359131}
+{&#39;epoch&#39;: 100, &#39;loss&#39;: 3.9982895851135254}
+{&#39;epoch&#39;: 150, &#39;loss&#39;: 3.9982845783233643}
+{&#39;epoch&#39;: 200, &#39;loss&#39;: 3.998284339904785}
+{&#39;epoch&#39;: 250, &#39;loss&#39;: 3.9982845783233643}
+{&#39;epoch&#39;: 300, &#39;loss&#39;: 3.9982845783233643}
+{&#39;epoch&#39;: 350, &#39;loss&#39;: 3.9982845783233643}
+{&#39;epoch&#39;: 400, &#39;loss&#39;: 3.9982845783233643}
+{&#39;epoch&#39;: 450, &#39;loss&#39;: 3.9982845783233643}
+time used: 0.4889392852783203
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code>
+</code></pre></div>
+
+<h3 id="三torchkeras使用单gpu范例">三，torchkeras使用单GPU范例<a class="headerlink" href="#三torchkeras使用单gpu范例" title="Permanent link">#</a></h3>
+<p>下面演示使用torchkeras来应用GPU训练模型的方法。</p>
+<p>其对应的CPU训练模型代码参见《6-2,训练模型的3种方法》</p>
+<p>本例仅需要在它的基础上增加一行代码，在model.compile时指定 device即可。</p>
+<p><strong>1，准备数据</strong></p>
+<div class="highlight"><pre><span></span><code><span class="err">!</span><span class="n">pip</span> <span class="n">install</span> <span class="o">-</span><span class="n">U</span> <span class="n">torchkeras</span> 
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">torch</span> 
+<span class="kn">from</span> <span class="nn">torch</span> <span class="kn">import</span> <span class="n">nn</span> 
+
+<span class="kn">import</span> <span class="nn">torchvision</span> 
+<span class="kn">from</span> <span class="nn">torchvision</span> <span class="kn">import</span> <span class="n">transforms</span>
+
+<span class="kn">import</span> <span class="nn">torchkeras</span> 
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code><span class="n">transform</span> <span class="o">=</span> <span class="n">transforms</span><span class="o">.</span><span class="n">Compose</span><span class="p">([</span><span class="n">transforms</span><span class="o">.</span><span class="n">ToTensor</span><span class="p">()])</span>
+
+<span class="n">ds_train</span> <span class="o">=</span> <span class="n">torchvision</span><span class="o">.</span><span class="n">datasets</span><span class="o">.</span><span class="n">MNIST</span><span class="p">(</span><span class="n">root</span><span class="o">=</span><span class="s2">&quot;../data/minist/&quot;</span><span class="p">,</span><span class="n">train</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">download</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">transform</span><span class="o">=</span><span class="n">transform</span><span class="p">)</span>
+<span class="n">ds_valid</span> <span class="o">=</span> <span class="n">torchvision</span><span class="o">.</span><span class="n">datasets</span><span class="o">.</span><span class="n">MNIST</span><span class="p">(</span><span class="n">root</span><span class="o">=</span><span class="s2">&quot;../data/minist/&quot;</span><span class="p">,</span><span class="n">train</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">download</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">transform</span><span class="o">=</span><span class="n">transform</span><span class="p">)</span>
+
+<span class="n">dl_train</span> <span class="o">=</span>  <span class="n">torch</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">DataLoader</span><span class="p">(</span><span class="n">ds_train</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">128</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">num_workers</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+<span class="n">dl_valid</span> <span class="o">=</span>  <span class="n">torch</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">DataLoader</span><span class="p">(</span><span class="n">ds_valid</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">128</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">num_workers</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ds_train</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ds_valid</span><span class="p">))</span>
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code><span class="o">%</span><span class="n">matplotlib</span> <span class="n">inline</span>
+<span class="o">%</span><span class="n">config</span> <span class="n">InlineBackend</span><span class="o">.</span><span class="n">figure_format</span> <span class="o">=</span> <span class="s1">&#39;svg&#39;</span>
+
+<span class="c1">#查看部分样本</span>
+<span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span> 
+
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span><span class="mi">8</span><span class="p">))</span> 
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">9</span><span class="p">):</span>
+    <span class="n">img</span><span class="p">,</span><span class="n">label</span> <span class="o">=</span> <span class="n">ds_train</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+    <span class="n">img</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">=</span><span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">img</span><span class="o">.</span><span class="n">numpy</span><span class="p">())</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;label = </span><span class="si">%d</span><span class="s2">&quot;</span><span class="o">%</span><span class="n">label</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xticks</span><span class="p">([])</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_yticks</span><span class="p">([])</span> 
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code>
+</code></pre></div>
+
+<p><strong>2，定义模型</strong></p>
+<div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">CnnModel</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">layers</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">ModuleList</span><span class="p">([</span>
+            <span class="n">nn</span><span class="o">.</span><span class="n">Conv2d</span><span class="p">(</span><span class="n">in_channels</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">out_channels</span><span class="o">=</span><span class="mi">32</span><span class="p">,</span><span class="n">kernel_size</span> <span class="o">=</span> <span class="mi">3</span><span class="p">),</span>
+            <span class="n">nn</span><span class="o">.</span><span class="n">MaxPool2d</span><span class="p">(</span><span class="n">kernel_size</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span><span class="n">stride</span> <span class="o">=</span> <span class="mi">2</span><span class="p">),</span>
+            <span class="n">nn</span><span class="o">.</span><span class="n">Conv2d</span><span class="p">(</span><span class="n">in_channels</span><span class="o">=</span><span class="mi">32</span><span class="p">,</span><span class="n">out_channels</span><span class="o">=</span><span class="mi">64</span><span class="p">,</span><span class="n">kernel_size</span> <span class="o">=</span> <span class="mi">5</span><span class="p">),</span>
+            <span class="n">nn</span><span class="o">.</span><span class="n">MaxPool2d</span><span class="p">(</span><span class="n">kernel_size</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span><span class="n">stride</span> <span class="o">=</span> <span class="mi">2</span><span class="p">),</span>
+            <span class="n">nn</span><span class="o">.</span><span class="n">Dropout2d</span><span class="p">(</span><span class="n">p</span> <span class="o">=</span> <span class="mf">0.1</span><span class="p">),</span>
+            <span class="n">nn</span><span class="o">.</span><span class="n">AdaptiveMaxPool2d</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)),</span>
+            <span class="n">nn</span><span class="o">.</span><span class="n">Flatten</span><span class="p">(),</span>
+            <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="mi">64</span><span class="p">,</span><span class="mi">32</span><span class="p">),</span>
+            <span class="n">nn</span><span class="o">.</span><span class="n">ReLU</span><span class="p">(),</span>
+            <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="mi">32</span><span class="p">,</span><span class="mi">10</span><span class="p">)]</span>
+        <span class="p">)</span>
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">x</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">layers</span><span class="p">:</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">layer</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">x</span>
+
+<span class="n">net</span> <span class="o">=</span> <span class="n">CnnModel</span><span class="p">()</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">torchkeras</span><span class="o">.</span><span class="n">Model</span><span class="p">(</span><span class="n">net</span><span class="p">)</span>
+<span class="n">model</span><span class="o">.</span><span class="n">summary</span><span class="p">(</span><span class="n">input_shape</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">32</span><span class="p">,</span><span class="mi">32</span><span class="p">))</span>
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code>----------------------------------------------------------------
+        Layer (type)               Output Shape         Param #
+================================================================
+            Conv2d-1           [-1, 32, 30, 30]             320
+         MaxPool2d-2           [-1, 32, 15, 15]               0
+            Conv2d-3           [-1, 64, 11, 11]          51,264
+         MaxPool2d-4             [-1, 64, 5, 5]               0
+         Dropout2d-5             [-1, 64, 5, 5]               0
+ AdaptiveMaxPool2d-6             [-1, 64, 1, 1]               0
+           Flatten-7                   [-1, 64]               0
+            Linear-8                   [-1, 32]           2,080
+              ReLU-9                   [-1, 32]               0
+           Linear-10                   [-1, 10]             330
+================================================================
+Total params: 53,994
+Trainable params: 53,994
+Non-trainable params: 0
+----------------------------------------------------------------
+Input size (MB): 0.003906
+Forward/backward pass size (MB): 0.359695
+Params size (MB): 0.205971
+Estimated Total Size (MB): 0.569572
+----------------------------------------------------------------
+</code></pre></div>
+
+<p><strong>3，训练模型</strong></p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="kn">import</span> <span class="n">accuracy_score</span>
+
+<span class="k">def</span> <span class="nf">accuracy</span><span class="p">(</span><span class="n">y_pred</span><span class="p">,</span><span class="n">y_true</span><span class="p">):</span>
+    <span class="n">y_pred_cls</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Softmax</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)(</span><span class="n">y_pred</span><span class="p">),</span><span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">data</span>
+    <span class="k">return</span> <span class="n">accuracy_score</span><span class="p">(</span><span class="n">y_true</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">(),</span><span class="n">y_pred_cls</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">())</span> 
+    <span class="c1"># 注意此处要将数据先移动到cpu上，然后才能转换成numpy数组</span>
+
+<span class="n">device</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">(</span><span class="s2">&quot;cuda:0&quot;</span> <span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">is_available</span><span class="p">()</span> <span class="k">else</span> <span class="s2">&quot;cpu&quot;</span><span class="p">)</span>
+
+<span class="n">model</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">loss_func</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">CrossEntropyLoss</span><span class="p">(),</span>
+             <span class="n">optimizer</span><span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">Adam</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span><span class="n">lr</span> <span class="o">=</span> <span class="mf">0.02</span><span class="p">),</span>
+             <span class="n">metrics_dict</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;accuracy&quot;</span><span class="p">:</span><span class="n">accuracy</span><span class="p">},</span><span class="n">device</span> <span class="o">=</span> <span class="n">device</span><span class="p">)</span> <span class="c1"># 注意此处compile时指定了device</span>
+
+<span class="n">dfhistory</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="n">dl_train</span> <span class="o">=</span> <span class="n">dl_train</span><span class="p">,</span> <span class="n">dl_val</span><span class="o">=</span><span class="n">dl_valid</span><span class="p">,</span> <span class="n">log_step_freq</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span> 
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code>Start Training ...
+
+================================================================================2020-06-27 00:24:29
+{&#39;step&#39;: 100, &#39;loss&#39;: 1.063, &#39;accuracy&#39;: 0.619}
+{&#39;step&#39;: 200, &#39;loss&#39;: 0.681, &#39;accuracy&#39;: 0.764}
+{&#39;step&#39;: 300, &#39;loss&#39;: 0.534, &#39;accuracy&#39;: 0.818}
+{&#39;step&#39;: 400, &#39;loss&#39;: 0.458, &#39;accuracy&#39;: 0.847}
+
+ +-------+-------+----------+----------+--------------+
+| epoch |  loss | accuracy | val_loss | val_accuracy |
++-------+-------+----------+----------+--------------+
+|   1   | 0.412 |  0.863   |  0.128   |    0.961     |
++-------+-------+----------+----------+--------------+
+
+================================================================================2020-06-27 00:24:35
+{&#39;step&#39;: 100, &#39;loss&#39;: 0.147, &#39;accuracy&#39;: 0.956}
+{&#39;step&#39;: 200, &#39;loss&#39;: 0.156, &#39;accuracy&#39;: 0.954}
+{&#39;step&#39;: 300, &#39;loss&#39;: 0.156, &#39;accuracy&#39;: 0.954}
+{&#39;step&#39;: 400, &#39;loss&#39;: 0.157, &#39;accuracy&#39;: 0.955}
+
+ +-------+-------+----------+----------+--------------+
+| epoch |  loss | accuracy | val_loss | val_accuracy |
++-------+-------+----------+----------+--------------+
+|   2   | 0.153 |  0.956   |  0.085   |    0.976     |
++-------+-------+----------+----------+--------------+
+
+================================================================================2020-06-27 00:24:42
+{&#39;step&#39;: 100, &#39;loss&#39;: 0.126, &#39;accuracy&#39;: 0.965}
+{&#39;step&#39;: 200, &#39;loss&#39;: 0.147, &#39;accuracy&#39;: 0.96}
+{&#39;step&#39;: 300, &#39;loss&#39;: 0.153, &#39;accuracy&#39;: 0.959}
+{&#39;step&#39;: 400, &#39;loss&#39;: 0.147, &#39;accuracy&#39;: 0.96}
+
+ +-------+-------+----------+----------+--------------+
+| epoch |  loss | accuracy | val_loss | val_accuracy |
++-------+-------+----------+----------+--------------+
+|   3   | 0.146 |   0.96   |  0.119   |    0.968     |
++-------+-------+----------+----------+--------------+
+
+================================================================================2020-06-27 00:24:48
+Finished Training...
+</code></pre></div>
+
+<p><strong>4，评估模型</strong></p>
+<div class="highlight"><pre><span></span><code><span class="o">%</span><span class="n">matplotlib</span> <span class="n">inline</span>
+<span class="o">%</span><span class="n">config</span> <span class="n">InlineBackend</span><span class="o">.</span><span class="n">figure_format</span> <span class="o">=</span> <span class="s1">&#39;svg&#39;</span>
+
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+<span class="k">def</span> <span class="nf">plot_metric</span><span class="p">(</span><span class="n">dfhistory</span><span class="p">,</span> <span class="n">metric</span><span class="p">):</span>
+    <span class="n">train_metrics</span> <span class="o">=</span> <span class="n">dfhistory</span><span class="p">[</span><span class="n">metric</span><span class="p">]</span>
+    <span class="n">val_metrics</span> <span class="o">=</span> <span class="n">dfhistory</span><span class="p">[</span><span class="s1">&#39;val_&#39;</span><span class="o">+</span><span class="n">metric</span><span class="p">]</span>
+    <span class="n">epochs</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">train_metrics</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">epochs</span><span class="p">,</span> <span class="n">train_metrics</span><span class="p">,</span> <span class="s1">&#39;bo--&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">epochs</span><span class="p">,</span> <span class="n">val_metrics</span><span class="p">,</span> <span class="s1">&#39;ro-&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Training and validation &#39;</span><span class="o">+</span> <span class="n">metric</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Epochs&quot;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="n">metric</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">([</span><span class="s2">&quot;train_&quot;</span><span class="o">+</span><span class="n">metric</span><span class="p">,</span> <span class="s1">&#39;val_&#39;</span><span class="o">+</span><span class="n">metric</span><span class="p">])</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code><span class="n">plot_metric</span><span class="p">(</span><span class="n">dfhistory</span><span class="p">,</span><span class="s2">&quot;loss&quot;</span><span class="p">)</span>
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code><span class="n">plot_metric</span><span class="p">(</span><span class="n">dfhistory</span><span class="p">,</span><span class="s2">&quot;accuracy&quot;</span><span class="p">)</span>
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code><span class="n">model</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">dl_valid</span><span class="p">)</span>
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code>{&#39;val_accuracy&#39;: 0.967068829113924, &#39;val_loss&#39;: 0.11601964030650598}
+</code></pre></div>
+
+<p><strong>5，使用模型</strong></p>
+<div class="highlight"><pre><span></span><code><span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">dl_valid</span><span class="p">)[</span><span class="mi">0</span><span class="p">:</span><span class="mi">10</span><span class="p">]</span>
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code>tensor([[ -9.2092,   3.1997,   1.4028,  -2.7135,  -0.7320,  -2.0518, -20.4938,
+          14.6774,   1.7616,   5.8549],
+        [  2.8509,   4.9781,  18.0946,   0.0928,  -1.6061,  -4.1437,   4.8697,
+           3.8811,   4.3869,  -3.5929],
+        [-22.5231,  13.6643,   5.0244, -11.0188, -16.8147,  -9.5894,  -6.2556,
+         -10.5648, -12.1022, -19.4685],
+        [ 23.2670, -12.0711,  -7.3968,  -8.2715,  -1.0915, -12.6050,   8.0444,
+         -16.9339,   1.8827,  -0.2497],
+        [ -4.1159,   3.2102,   0.4971, -11.8064,  12.1460,  -5.1650,  -6.5918,
+           1.0088,   0.8362,   2.5132],
+        [-26.1764,  15.6251,   6.1191, -12.2424, -13.9725, -10.0540,  -7.8669,
+          -5.9602, -11.1944, -18.7890],
+        [ -5.0602,   3.3779,  -0.6647,  -8.5185,  10.0320,  -5.5107,  -6.9579,
+           2.3811,   0.2542,   3.2860],
+        [  4.1017,  -0.4282,   7.2220,   3.3700,  -3.6813,   1.1576,  -1.8479,
+           0.7450,   3.9768,   6.2640],
+        [  1.9689,  -0.3960,   7.4414, -10.4789,   2.7066,   1.7482,   5.7971,
+          -4.5808,   3.0911,  -5.1971],
+        [ -2.9680,  -1.2369,  -0.0829,  -1.8577,   1.9380,  -0.8374,  -8.2207,
+           3.5060,   3.8735,  13.6762]], device=&#39;cuda:0&#39;)
+</code></pre></div>
+
+<p><strong>6，保存模型</strong></p>
+<div class="highlight"><pre><span></span><code><span class="c1"># save the model parameters</span>
+<span class="n">torch</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">state_dict</span><span class="p">(),</span> <span class="s2">&quot;model_parameter.pkl&quot;</span><span class="p">)</span>
+
+<span class="n">model_clone</span> <span class="o">=</span> <span class="n">torchkeras</span><span class="o">.</span><span class="n">Model</span><span class="p">(</span><span class="n">CnnModel</span><span class="p">())</span>
+<span class="n">model_clone</span><span class="o">.</span><span class="n">load_state_dict</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;model_parameter.pkl&quot;</span><span class="p">))</span>
+
+<span class="n">model_clone</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">loss_func</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">CrossEntropyLoss</span><span class="p">(),</span>
+             <span class="n">optimizer</span><span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">Adam</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span><span class="n">lr</span> <span class="o">=</span> <span class="mf">0.02</span><span class="p">),</span>
+             <span class="n">metrics_dict</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;accuracy&quot;</span><span class="p">:</span><span class="n">accuracy</span><span class="p">},</span><span class="n">device</span> <span class="o">=</span> <span class="n">device</span><span class="p">)</span> <span class="c1"># 注意此处compile时指定了device</span>
+
+<span class="n">model_clone</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">dl_valid</span><span class="p">)</span>
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code>{&#39;val_accuracy&#39;: 0.967068829113924, &#39;val_loss&#39;: 0.11601964030650598}
+</code></pre></div>
+
+<h3 id="四torchkeras使用多gpu范例">四，torchkeras使用多GPU范例<a class="headerlink" href="#四torchkeras使用多gpu范例" title="Permanent link">#</a></h3>
+<p>注：以下范例需要在有多个GPU的机器上跑。如果在单GPU的机器上跑，也能跑通，但是实际上使用的是单个GPU。</p>
+<p><strong>1，准备数据</strong></p>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">torch</span> 
+<span class="kn">from</span> <span class="nn">torch</span> <span class="kn">import</span> <span class="n">nn</span> 
+
+<span class="kn">import</span> <span class="nn">torchvision</span> 
+<span class="kn">from</span> <span class="nn">torchvision</span> <span class="kn">import</span> <span class="n">transforms</span>
+
+<span class="kn">import</span> <span class="nn">torchkeras</span> 
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code><span class="n">transform</span> <span class="o">=</span> <span class="n">transforms</span><span class="o">.</span><span class="n">Compose</span><span class="p">([</span><span class="n">transforms</span><span class="o">.</span><span class="n">ToTensor</span><span class="p">()])</span>
+
+<span class="n">ds_train</span> <span class="o">=</span> <span class="n">torchvision</span><span class="o">.</span><span class="n">datasets</span><span class="o">.</span><span class="n">MNIST</span><span class="p">(</span><span class="n">root</span><span class="o">=</span><span class="s2">&quot;../data/minist/&quot;</span><span class="p">,</span><span class="n">train</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">download</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">transform</span><span class="o">=</span><span class="n">transform</span><span class="p">)</span>
+<span class="n">ds_valid</span> <span class="o">=</span> <span class="n">torchvision</span><span class="o">.</span><span class="n">datasets</span><span class="o">.</span><span class="n">MNIST</span><span class="p">(</span><span class="n">root</span><span class="o">=</span><span class="s2">&quot;../data/minist/&quot;</span><span class="p">,</span><span class="n">train</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">download</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">transform</span><span class="o">=</span><span class="n">transform</span><span class="p">)</span>
+
+<span class="n">dl_train</span> <span class="o">=</span>  <span class="n">torch</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">DataLoader</span><span class="p">(</span><span class="n">ds_train</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">128</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">num_workers</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+<span class="n">dl_valid</span> <span class="o">=</span>  <span class="n">torch</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">DataLoader</span><span class="p">(</span><span class="n">ds_valid</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">128</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">num_workers</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ds_train</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ds_valid</span><span class="p">))</span>
+</code></pre></div>
+
+<p><strong>2，定义模型</strong></p>
+<div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">CnnModule</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">layers</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">ModuleList</span><span class="p">([</span>
+            <span class="n">nn</span><span class="o">.</span><span class="n">Conv2d</span><span class="p">(</span><span class="n">in_channels</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">out_channels</span><span class="o">=</span><span class="mi">32</span><span class="p">,</span><span class="n">kernel_size</span> <span class="o">=</span> <span class="mi">3</span><span class="p">),</span>
+            <span class="n">nn</span><span class="o">.</span><span class="n">MaxPool2d</span><span class="p">(</span><span class="n">kernel_size</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span><span class="n">stride</span> <span class="o">=</span> <span class="mi">2</span><span class="p">),</span>
+            <span class="n">nn</span><span class="o">.</span><span class="n">Conv2d</span><span class="p">(</span><span class="n">in_channels</span><span class="o">=</span><span class="mi">32</span><span class="p">,</span><span class="n">out_channels</span><span class="o">=</span><span class="mi">64</span><span class="p">,</span><span class="n">kernel_size</span> <span class="o">=</span> <span class="mi">5</span><span class="p">),</span>
+            <span class="n">nn</span><span class="o">.</span><span class="n">MaxPool2d</span><span class="p">(</span><span class="n">kernel_size</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span><span class="n">stride</span> <span class="o">=</span> <span class="mi">2</span><span class="p">),</span>
+            <span class="n">nn</span><span class="o">.</span><span class="n">Dropout2d</span><span class="p">(</span><span class="n">p</span> <span class="o">=</span> <span class="mf">0.1</span><span class="p">),</span>
+            <span class="n">nn</span><span class="o">.</span><span class="n">AdaptiveMaxPool2d</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)),</span>
+            <span class="n">nn</span><span class="o">.</span><span class="n">Flatten</span><span class="p">(),</span>
+            <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="mi">64</span><span class="p">,</span><span class="mi">32</span><span class="p">),</span>
+            <span class="n">nn</span><span class="o">.</span><span class="n">ReLU</span><span class="p">(),</span>
+            <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="mi">32</span><span class="p">,</span><span class="mi">10</span><span class="p">)]</span>
+        <span class="p">)</span>
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">x</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">layers</span><span class="p">:</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">layer</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>  
+        <span class="k">return</span> <span class="n">x</span>
+
+<span class="n">net</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">DataParallel</span><span class="p">(</span><span class="n">CnnModule</span><span class="p">())</span>  <span class="c1">#Attention this line!!!</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">torchkeras</span><span class="o">.</span><span class="n">Model</span><span class="p">(</span><span class="n">net</span><span class="p">)</span>
+
+<span class="n">model</span><span class="o">.</span><span class="n">summary</span><span class="p">(</span><span class="n">input_shape</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">32</span><span class="p">,</span><span class="mi">32</span><span class="p">))</span>
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code>
+</code></pre></div>
+
+<p><strong>3，训练模型</strong></p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="kn">import</span> <span class="n">accuracy_score</span>
+
+<span class="k">def</span> <span class="nf">accuracy</span><span class="p">(</span><span class="n">y_pred</span><span class="p">,</span><span class="n">y_true</span><span class="p">):</span>
+    <span class="n">y_pred_cls</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Softmax</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)(</span><span class="n">y_pred</span><span class="p">),</span><span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">data</span>
+    <span class="k">return</span> <span class="n">accuracy_score</span><span class="p">(</span><span class="n">y_true</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">(),</span><span class="n">y_pred_cls</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">())</span> 
+    <span class="c1"># 注意此处要将数据先移动到cpu上，然后才能转换成numpy数组</span>
+
+<span class="n">device</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">(</span><span class="s2">&quot;cuda:0&quot;</span> <span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">is_available</span><span class="p">()</span> <span class="k">else</span> <span class="s2">&quot;cpu&quot;</span><span class="p">)</span>
+<span class="n">model</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">loss_func</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">CrossEntropyLoss</span><span class="p">(),</span>
+             <span class="n">optimizer</span><span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">Adam</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span><span class="n">lr</span> <span class="o">=</span> <span class="mf">0.02</span><span class="p">),</span>
+             <span class="n">metrics_dict</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;accuracy&quot;</span><span class="p">:</span><span class="n">accuracy</span><span class="p">},</span><span class="n">device</span> <span class="o">=</span> <span class="n">device</span><span class="p">)</span> <span class="c1"># 注意此处compile时指定了device</span>
+
+<span class="n">dfhistory</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="n">dl_train</span> <span class="o">=</span> <span class="n">dl_train</span><span class="p">,</span> <span class="n">dl_val</span><span class="o">=</span><span class="n">dl_valid</span><span class="p">,</span> <span class="n">log_step_freq</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span> 
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code>Start Training ...
+
+================================================================================2020-06-27 00:24:29
+{&#39;step&#39;: 100, &#39;loss&#39;: 1.063, &#39;accuracy&#39;: 0.619}
+{&#39;step&#39;: 200, &#39;loss&#39;: 0.681, &#39;accuracy&#39;: 0.764}
+{&#39;step&#39;: 300, &#39;loss&#39;: 0.534, &#39;accuracy&#39;: 0.818}
+{&#39;step&#39;: 400, &#39;loss&#39;: 0.458, &#39;accuracy&#39;: 0.847}
+
+ +-------+-------+----------+----------+--------------+
+| epoch |  loss | accuracy | val_loss | val_accuracy |
++-------+-------+----------+----------+--------------+
+|   1   | 0.412 |  0.863   |  0.128   |    0.961     |
++-------+-------+----------+----------+--------------+
+
+================================================================================2020-06-27 00:24:35
+{&#39;step&#39;: 100, &#39;loss&#39;: 0.147, &#39;accuracy&#39;: 0.956}
+{&#39;step&#39;: 200, &#39;loss&#39;: 0.156, &#39;accuracy&#39;: 0.954}
+{&#39;step&#39;: 300, &#39;loss&#39;: 0.156, &#39;accuracy&#39;: 0.954}
+{&#39;step&#39;: 400, &#39;loss&#39;: 0.157, &#39;accuracy&#39;: 0.955}
+
+ +-------+-------+----------+----------+--------------+
+| epoch |  loss | accuracy | val_loss | val_accuracy |
++-------+-------+----------+----------+--------------+
+|   2   | 0.153 |  0.956   |  0.085   |    0.976     |
++-------+-------+----------+----------+--------------+
+
+================================================================================2020-06-27 00:24:42
+{&#39;step&#39;: 100, &#39;loss&#39;: 0.126, &#39;accuracy&#39;: 0.965}
+{&#39;step&#39;: 200, &#39;loss&#39;: 0.147, &#39;accuracy&#39;: 0.96}
+{&#39;step&#39;: 300, &#39;loss&#39;: 0.153, &#39;accuracy&#39;: 0.959}
+{&#39;step&#39;: 400, &#39;loss&#39;: 0.147, &#39;accuracy&#39;: 0.96}
+
+ +-------+-------+----------+----------+--------------+
+| epoch |  loss | accuracy | val_loss | val_accuracy |
++-------+-------+----------+----------+--------------+
+|   3   | 0.146 |   0.96   |  0.119   |    0.968     |
++-------+-------+----------+----------+--------------+
+
+================================================================================2020-06-27 00:24:48
+Finished Training...
+</code></pre></div>
+
+<p><strong>4，评估模型</strong></p>
+<div class="highlight"><pre><span></span><code><span class="o">%</span><span class="n">matplotlib</span> <span class="n">inline</span>
+<span class="o">%</span><span class="n">config</span> <span class="n">InlineBackend</span><span class="o">.</span><span class="n">figure_format</span> <span class="o">=</span> <span class="s1">&#39;svg&#39;</span>
+
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+<span class="k">def</span> <span class="nf">plot_metric</span><span class="p">(</span><span class="n">dfhistory</span><span class="p">,</span> <span class="n">metric</span><span class="p">):</span>
+    <span class="n">train_metrics</span> <span class="o">=</span> <span class="n">dfhistory</span><span class="p">[</span><span class="n">metric</span><span class="p">]</span>
+    <span class="n">val_metrics</span> <span class="o">=</span> <span class="n">dfhistory</span><span class="p">[</span><span class="s1">&#39;val_&#39;</span><span class="o">+</span><span class="n">metric</span><span class="p">]</span>
+    <span class="n">epochs</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">train_metrics</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">epochs</span><span class="p">,</span> <span class="n">train_metrics</span><span class="p">,</span> <span class="s1">&#39;bo--&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">epochs</span><span class="p">,</span> <span class="n">val_metrics</span><span class="p">,</span> <span class="s1">&#39;ro-&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Training and validation &#39;</span><span class="o">+</span> <span class="n">metric</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Epochs&quot;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="n">metric</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">([</span><span class="s2">&quot;train_&quot;</span><span class="o">+</span><span class="n">metric</span><span class="p">,</span> <span class="s1">&#39;val_&#39;</span><span class="o">+</span><span class="n">metric</span><span class="p">])</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code><span class="n">plot_metric</span><span class="p">(</span><span class="n">dfhistory</span><span class="p">,</span> <span class="s2">&quot;loss&quot;</span><span class="p">)</span>
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code><span class="n">plot_metric</span><span class="p">(</span><span class="n">dfhistory</span><span class="p">,</span><span class="s2">&quot;accuracy&quot;</span><span class="p">)</span>
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code><span class="n">model</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">dl_valid</span><span class="p">)</span>
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code>{&#39;val_accuracy&#39;: 0.9603441455696202, &#39;val_loss&#39;: 0.14203246376371081}
+</code></pre></div>
+
+<p><strong>5，使用模型</strong></p>
+<div class="highlight"><pre><span></span><code><span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">dl_valid</span><span class="p">)[</span><span class="mi">0</span><span class="p">:</span><span class="mi">10</span><span class="p">]</span>
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code>tensor([[ -9.2092,   3.1997,   1.4028,  -2.7135,  -0.7320,  -2.0518, -20.4938,
+          14.6774,   1.7616,   5.8549],
+        [  2.8509,   4.9781,  18.0946,   0.0928,  -1.6061,  -4.1437,   4.8697,
+           3.8811,   4.3869,  -3.5929],
+        [-22.5231,  13.6643,   5.0244, -11.0188, -16.8147,  -9.5894,  -6.2556,
+         -10.5648, -12.1022, -19.4685],
+        [ 23.2670, -12.0711,  -7.3968,  -8.2715,  -1.0915, -12.6050,   8.0444,
+         -16.9339,   1.8827,  -0.2497],
+        [ -4.1159,   3.2102,   0.4971, -11.8064,  12.1460,  -5.1650,  -6.5918,
+           1.0088,   0.8362,   2.5132],
+        [-26.1764,  15.6251,   6.1191, -12.2424, -13.9725, -10.0540,  -7.8669,
+          -5.9602, -11.1944, -18.7890],
+        [ -5.0602,   3.3779,  -0.6647,  -8.5185,  10.0320,  -5.5107,  -6.9579,
+           2.3811,   0.2542,   3.2860],
+        [  4.1017,  -0.4282,   7.2220,   3.3700,  -3.6813,   1.1576,  -1.8479,
+           0.7450,   3.9768,   6.2640],
+        [  1.9689,  -0.3960,   7.4414, -10.4789,   2.7066,   1.7482,   5.7971,
+          -4.5808,   3.0911,  -5.1971],
+        [ -2.9680,  -1.2369,  -0.0829,  -1.8577,   1.9380,  -0.8374,  -8.2207,
+           3.5060,   3.8735,  13.6762]], device=&#39;cuda:0&#39;)
+</code></pre></div>
+
+<p><strong>6，保存模型</strong></p>
+<div class="highlight"><pre><span></span><code><span class="c1"># save the model parameters</span>
+<span class="n">torch</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">net</span><span class="o">.</span><span class="n">module</span><span class="o">.</span><span class="n">state_dict</span><span class="p">(),</span> <span class="s2">&quot;model_parameter.pkl&quot;</span><span class="p">)</span>
+
+<span class="n">net_clone</span> <span class="o">=</span> <span class="n">CnnModel</span><span class="p">()</span>
+<span class="n">net_clone</span><span class="o">.</span><span class="n">load_state_dict</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;model_parameter.pkl&quot;</span><span class="p">))</span>
+
+<span class="n">model_clone</span> <span class="o">=</span> <span class="n">torchkeras</span><span class="o">.</span><span class="n">Model</span><span class="p">(</span><span class="n">net_clone</span><span class="p">)</span>
+<span class="n">model_clone</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">loss_func</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">CrossEntropyLoss</span><span class="p">(),</span>
+             <span class="n">optimizer</span><span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">Adam</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span><span class="n">lr</span> <span class="o">=</span> <span class="mf">0.02</span><span class="p">),</span>
+             <span class="n">metrics_dict</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;accuracy&quot;</span><span class="p">:</span><span class="n">accuracy</span><span class="p">},</span><span class="n">device</span> <span class="o">=</span> <span class="n">device</span><span class="p">)</span>
+<span class="n">model_clone</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">dl_valid</span><span class="p">)</span>
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code>{&#39;val_accuracy&#39;: 0.9603441455696202, &#39;val_loss&#39;: 0.14203246376371081}
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code>
+</code></pre></div>
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+      </main>
+      
+        
+<footer class="md-footer">
+  
+    <div class="md-footer-nav">
+      <nav class="md-footer-nav__inner md-grid" aria-label="Footer">
+        
+          <a href="../6-2%2C%E8%AE%AD%E7%BB%83%E6%A8%A1%E5%9E%8B%E7%9A%843%E7%A7%8D%E6%96%B9%E6%B3%95/" title="6-2,训练模型的3种方法" class="md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+            <div class="md-footer-nav__button md-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+            </div>
+            <div class="md-footer-nav__title">
+              <div class="md-ellipsis">
+                <span class="md-footer-nav__direction">
+                  上一页
+                </span>
+                6-2,训练模型的3种方法
+              </div>
+            </div>
+          </a>
+        
+        
+      </nav>
+    </div>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+        Made with
+        <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+          Material for MkDocs
+        </a>
+      </div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    
+      <script src="../../assets/javascripts/vendor.2d1db4bd.min.js"></script>
+      <script src="../../assets/javascripts/bundle.6627ddf3.min.js"></script><script id="__lang" type="application/json">{"clipboard.copy": "\u590d\u5236", "clipboard.copied": "\u5df2\u590d\u5236", "search.config.lang": "ja", "search.config.pipeline": "trimmer, stemmer", "search.config.separator": "[\\uff0c\\u3002]+", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c"}</script>
+      
+      <script>
+        app = initialize({
+          base: "../..",
+          features: ['navigation.expand'],
+          search: Object.assign({
+            worker: "../../assets/javascripts/worker/search.5eca75d3.min.js"
+          }, typeof search !== "undefined" && search)
+        })
+      </script>
+      
+    
+  </body>
+</html>

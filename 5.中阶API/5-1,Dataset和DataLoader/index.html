@@ -1,0 +1,1447 @@
+
+
+
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      <link rel="shortcut icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-5.5.14">
+    
+    
+      
+        <title>5-1, Dataset和DataLoader - 20天吃掉那只Pytorch</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.d3202873.min.css">
+      
+      
+    
+    
+    
+      
+        <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
+        <style>body,input{font-family:"Roboto",-apple-system,BlinkMacSystemFont,Helvetica,Arial,sans-serif}code,kbd,pre{font-family:"Roboto Mono",SFMono-Regular,Consolas,Menlo,monospace}</style>
+      
+    
+    
+    
+    
+      
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#5-1-dataset和dataloader" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <header class="md-header" data-md-component="header">
+  <nav class="md-header-nav md-grid" aria-label="Header">
+    <a href="../.." title="20天吃掉那只Pytorch" class="md-header-nav__button md-logo" aria-label="20天吃掉那只Pytorch">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 003-3 3 3 0 00-3-3 3 3 0 00-3 3 3 3 0 003 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    <label class="md-header-nav__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+    </label>
+    <div class="md-header-nav__title" data-md-component="header-title">
+      
+        <div class="md-header-nav__ellipsis">
+          <span class="md-header-nav__topic md-ellipsis">
+            20天吃掉那只Pytorch
+          </span>
+          <span class="md-header-nav__topic md-ellipsis">
+            
+              5-1, Dataset和DataLoader
+            
+          </span>
+        </div>
+      
+    </div>
+    
+      <label class="md-header-nav__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0116 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 019.5 16 6.5 6.5 0 013 9.5 6.5 6.5 0 019.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+      </label>
+      
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="搜索" placeholder="搜索" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" data-md-state="active">
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0116 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 019.5 16 6.5 6.5 0 013 9.5 6.5 6.5 0 019.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </label>
+      <button type="reset" class="md-search__icon md-icon" aria-label="Clear" data-md-component="search-reset" tabindex="-1">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header-nav__source">
+        
+<a href="https://github.com/lyhue1991/eat_pytorch_in_20_days/" title="前往 GitHub 仓库" class="md-source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M439.55 236.05L244 40.45a28.87 28.87 0 00-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 01-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 000 40.81l195.61 195.6a28.86 28.86 0 0040.8 0l194.69-194.69a28.86 28.86 0 000-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+        
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              <div class="md-sidebar md-sidebar--primary" data-md-component="navigation">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="20天吃掉那只Pytorch" class="md-nav__button md-logo" aria-label="20天吃掉那只Pytorch">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 003-3 3 3 0 00-3-3 3 3 0 00-3 3 3 3 0 003 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    20天吃掉那只Pytorch
+  </label>
+  
+    <div class="md-nav__source">
+      
+<a href="https://github.com/lyhue1991/eat_pytorch_in_20_days/" title="前往 GitHub 仓库" class="md-source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M439.55 236.05L244 40.45a28.87 28.87 0 00-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 01-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 000 40.81l195.61 195.6a28.86 28.86 0 0040.8 0l194.69-194.69a28.86 28.86 0 000-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../.." title="How to eat Pytorch in 20 days ?🔥🔥" class="md-nav__link">
+      How to eat Pytorch in 20 days ?🔥🔥
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-2" type="checkbox" id="nav-2">
+    
+    <label class="md-nav__link" for="nav-2">
+      1.建模流程
+      <span class="md-nav__icon md-icon"></span>
+    </label>
+    <nav class="md-nav" aria-label="1.建模流程" data-md-level="1">
+      <label class="md-nav__title" for="nav-2">
+        <span class="md-nav__icon md-icon"></span>
+        1.建模流程
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../1.%E5%BB%BA%E6%A8%A1%E6%B5%81%E7%A8%8B/" title="一、Pytorch的建模流程" class="md-nav__link">
+      一、Pytorch的建模流程
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../1.%E5%BB%BA%E6%A8%A1%E6%B5%81%E7%A8%8B/1-1%2C%E7%BB%93%E6%9E%84%E5%8C%96%E6%95%B0%E6%8D%AE%E5%BB%BA%E6%A8%A1%E6%B5%81%E7%A8%8B%E8%8C%83%E4%BE%8B/" title="1-1,结构化数据建模流程范例" class="md-nav__link">
+      1-1,结构化数据建模流程范例
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../1.%E5%BB%BA%E6%A8%A1%E6%B5%81%E7%A8%8B/1-2%2C%E5%9B%BE%E7%89%87%E6%95%B0%E6%8D%AE%E5%BB%BA%E6%A8%A1%E6%B5%81%E7%A8%8B%E8%8C%83%E4%BE%8B/" title="1-2,图片数据建模流程范例" class="md-nav__link">
+      1-2,图片数据建模流程范例
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../1.%E5%BB%BA%E6%A8%A1%E6%B5%81%E7%A8%8B/1-3%2C%E6%96%87%E6%9C%AC%E6%95%B0%E6%8D%AE%E5%BB%BA%E6%A8%A1%E6%B5%81%E7%A8%8B%E8%8C%83%E4%BE%8B/" title="1-3,文本数据建模流程范例" class="md-nav__link">
+      1-3,文本数据建模流程范例
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../1.%E5%BB%BA%E6%A8%A1%E6%B5%81%E7%A8%8B/1-4%2C%E6%97%B6%E9%97%B4%E5%BA%8F%E5%88%97%E6%95%B0%E6%8D%AE%E5%BB%BA%E6%A8%A1%E6%B5%81%E7%A8%8B%E8%8C%83%E4%BE%8B/" title="1-4,时间序列数据建模流程范例" class="md-nav__link">
+      1-4,时间序列数据建模流程范例
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-3" type="checkbox" id="nav-3">
+    
+    <label class="md-nav__link" for="nav-3">
+      2.核心概念
+      <span class="md-nav__icon md-icon"></span>
+    </label>
+    <nav class="md-nav" aria-label="2.核心概念" data-md-level="1">
+      <label class="md-nav__title" for="nav-3">
+        <span class="md-nav__icon md-icon"></span>
+        2.核心概念
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../2.%E6%A0%B8%E5%BF%83%E6%A6%82%E5%BF%B5/" title="二、Pytorch的核心概念" class="md-nav__link">
+      二、Pytorch的核心概念
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../2.%E6%A0%B8%E5%BF%83%E6%A6%82%E5%BF%B5/2-1%2C%E5%BC%A0%E9%87%8F%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" title="2-1,张量数据结构" class="md-nav__link">
+      2-1,张量数据结构
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../2.%E6%A0%B8%E5%BF%83%E6%A6%82%E5%BF%B5/2-2%2C%E8%87%AA%E5%8A%A8%E5%BE%AE%E5%88%86%E6%9C%BA%E5%88%B6/" title="2-2,自动微分机制" class="md-nav__link">
+      2-2,自动微分机制
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../2.%E6%A0%B8%E5%BF%83%E6%A6%82%E5%BF%B5/2-3%2C%E5%8A%A8%E6%80%81%E8%AE%A1%E7%AE%97%E5%9B%BE/" title="2-3,动态计算图" class="md-nav__link">
+      2-3,动态计算图
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-4" type="checkbox" id="nav-4">
+    
+    <label class="md-nav__link" for="nav-4">
+      3.层次结构
+      <span class="md-nav__icon md-icon"></span>
+    </label>
+    <nav class="md-nav" aria-label="3.层次结构" data-md-level="1">
+      <label class="md-nav__title" for="nav-4">
+        <span class="md-nav__icon md-icon"></span>
+        3.层次结构
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../3.%E5%B1%82%E6%AC%A1%E7%BB%93%E6%9E%84/" title="三、Pytorch的层次结构" class="md-nav__link">
+      三、Pytorch的层次结构
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../3.%E5%B1%82%E6%AC%A1%E7%BB%93%E6%9E%84/3-1%2C%E4%BD%8E%E9%98%B6API%E7%A4%BA%E8%8C%83/" title="3-1,低阶API示范" class="md-nav__link">
+      3-1,低阶API示范
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../3.%E5%B1%82%E6%AC%A1%E7%BB%93%E6%9E%84/3-2%2C%E4%B8%AD%E9%98%B6API%E7%A4%BA%E8%8C%83/" title="3-2,中阶API示范" class="md-nav__link">
+      3-2,中阶API示范
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../3.%E5%B1%82%E6%AC%A1%E7%BB%93%E6%9E%84/3-3%2C%E9%AB%98%E9%98%B6API%E7%A4%BA%E8%8C%83/" title="3-3,高阶API示范" class="md-nav__link">
+      3-3,高阶API示范
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-5" type="checkbox" id="nav-5">
+    
+    <label class="md-nav__link" for="nav-5">
+      4.低阶API
+      <span class="md-nav__icon md-icon"></span>
+    </label>
+    <nav class="md-nav" aria-label="4.低阶API" data-md-level="1">
+      <label class="md-nav__title" for="nav-5">
+        <span class="md-nav__icon md-icon"></span>
+        4.低阶API
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../4.%E4%BD%8E%E9%98%B6API/" title="四、Pytorch的低阶API" class="md-nav__link">
+      四、Pytorch的低阶API
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../4.%E4%BD%8E%E9%98%B6API/4-1%2C%E5%BC%A0%E9%87%8F%E7%9A%84%E7%BB%93%E6%9E%84%E6%93%8D%E4%BD%9C/" title="4-1,张量的结构操作" class="md-nav__link">
+      4-1,张量的结构操作
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../4.%E4%BD%8E%E9%98%B6API/4-2%2C%E5%BC%A0%E9%87%8F%E7%9A%84%E6%95%B0%E5%AD%A6%E8%BF%90%E7%AE%97/" title="4-2,张量的数学运算" class="md-nav__link">
+      4-2,张量的数学运算
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../4.%E4%BD%8E%E9%98%B6API/4-3%2Cnn.functional%E5%92%8Cnn.Module/" title="4-3,nn.functional 和 nn.Module" class="md-nav__link">
+      4-3,nn.functional 和 nn.Module
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+  
+
+
+  <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-6" type="checkbox" id="nav-6" checked>
+    
+    <label class="md-nav__link" for="nav-6">
+      5.中阶API
+      <span class="md-nav__icon md-icon"></span>
+    </label>
+    <nav class="md-nav" aria-label="5.中阶API" data-md-level="1">
+      <label class="md-nav__title" for="nav-6">
+        <span class="md-nav__icon md-icon"></span>
+        5.中阶API
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../" title="五、Pytorch的中阶API" class="md-nav__link">
+      五、Pytorch的中阶API
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+  
+
+
+  <li class="md-nav__item md-nav__item--active">
+    
+    <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+    
+      
+    
+    
+      <label class="md-nav__link md-nav__link--active" for="__toc">
+        5-1, Dataset和DataLoader
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+    
+    <a href="./" title="5-1, Dataset和DataLoader" class="md-nav__link md-nav__link--active">
+      5-1, Dataset和DataLoader
+    </a>
+    
+      
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#一dataset和dataloader概述" class="md-nav__link">
+    一，Dataset和DataLoader概述
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#二使用dataset创建数据集" class="md-nav__link">
+    二，使用Dataset创建数据集
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#三使用dataloader加载数据集" class="md-nav__link">
+    三，使用DataLoader加载数据集
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+    
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../5-2%2C%E6%A8%A1%E5%9E%8B%E5%B1%82/" title="5-2,模型层layers" class="md-nav__link">
+      5-2,模型层layers
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../5-3%2C%E6%8D%9F%E5%A4%B1%E5%87%BD%E6%95%B0/" title="5-5,损失函数losses" class="md-nav__link">
+      5-5,损失函数losses
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../5-4%2CTensorBoard%E5%8F%AF%E8%A7%86%E5%8C%96/" title="5-4,TensorBoard可视化" class="md-nav__link">
+      5-4,TensorBoard可视化
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-7" type="checkbox" id="nav-7">
+    
+    <label class="md-nav__link" for="nav-7">
+      6.高阶API
+      <span class="md-nav__icon md-icon"></span>
+    </label>
+    <nav class="md-nav" aria-label="6.高阶API" data-md-level="1">
+      <label class="md-nav__title" for="nav-7">
+        <span class="md-nav__icon md-icon"></span>
+        6.高阶API
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../6.%E9%AB%98%E9%98%B6API/" title="六、Pytorch的高阶API" class="md-nav__link">
+      六、Pytorch的高阶API
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../6.%E9%AB%98%E9%98%B6API/6-1%2C%E6%9E%84%E5%BB%BA%E6%A8%A1%E5%9E%8B%E7%9A%843%E7%A7%8D%E6%96%B9%E6%B3%95/" title="6-1,构建模型的3种方法" class="md-nav__link">
+      6-1,构建模型的3种方法
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../6.%E9%AB%98%E9%98%B6API/6-2%2C%E8%AE%AD%E7%BB%83%E6%A8%A1%E5%9E%8B%E7%9A%843%E7%A7%8D%E6%96%B9%E6%B3%95/" title="6-2,训练模型的3种方法" class="md-nav__link">
+      6-2,训练模型的3种方法
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../6.%E9%AB%98%E9%98%B6API/6-3%2C%E4%BD%BF%E7%94%A8GPU%E8%AE%AD%E7%BB%83%E6%A8%A1%E5%9E%8B/" title="6-3,使用GPU训练模型" class="md-nav__link">
+      6-3,使用GPU训练模型
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="toc">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#一dataset和dataloader概述" class="md-nav__link">
+    一，Dataset和DataLoader概述
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#二使用dataset创建数据集" class="md-nav__link">
+    二，使用Dataset创建数据集
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#三使用dataloader加载数据集" class="md-nav__link">
+    三，使用DataLoader加载数据集
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                  <a href="https://github.com/lyhue1991/eat_pytorch_in_20_days/edit/master/docs/5.中阶API/5-1,Dataset和DataLoader.md" title="编辑此页" class="md-content__button md-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25z"/></svg>
+                  </a>
+                
+                
+                  
+                
+                
+                <h1 id="5-1-dataset和dataloader">5-1, Dataset和DataLoader<a class="headerlink" href="#5-1-dataset和dataloader" title="Permanent link">#</a></h1>
+<p>Pytorch通常使用Dataset和DataLoader这两个工具类来构建数据管道。</p>
+<p>Dataset定义了数据集的内容，它相当于一个类似列表的数据结构，具有确定的长度，能够用索引获取数据集中的元素。</p>
+<p>而DataLoader定义了按batch加载数据集的方法，它是一个实现了<code>__iter__</code>方法的可迭代对象，每次迭代输出一个batch的数据。</p>
+<p>DataLoader能够控制batch的大小，batch中元素的采样方法，以及将batch结果整理成模型所需输入形式的方法，并且能够使用多进程读取数据。</p>
+<p>在绝大部分情况下，用户只需实现Dataset的<code>__len__</code>方法和<code>__getitem__</code>方法，就可以轻松构建自己的数据集，并用默认数据管道进行加载。</p>
+<div class="highlight"><pre><span></span><code>
+</code></pre></div>
+
+<h3 id="一dataset和dataloader概述">一，Dataset和DataLoader概述<a class="headerlink" href="#一dataset和dataloader概述" title="Permanent link">#</a></h3>
+<p><strong>1，获取一个batch数据的步骤</strong></p>
+<p>让我们考虑一下从一个数据集中获取一个batch的数据需要哪些步骤。</p>
+<p>(假定数据集的特征和标签分别表示为张量<code>X</code>和<code>Y</code>，数据集可以表示为<code>(X,Y)</code>, 假定batch大小为<code>m</code>)</p>
+<p>1，首先我们要确定数据集的长度<code>n</code>。</p>
+<p>结果类似：<code>n = 1000</code>。</p>
+<p>2，然后我们从<code>0</code>到<code>n-1</code>的范围中抽样出<code>m</code>个数(batch大小)。</p>
+<p>假定<code>m=4</code>, 拿到的结果是一个列表，类似：<code>indices = [1,4,8,9]</code></p>
+<p>3，接着我们从数据集中去取这<code>m</code>个数对应下标的元素。</p>
+<p>拿到的结果是一个元组列表，类似：<code>samples = [(X[1],Y[1]),(X[4],Y[4]),(X[8],Y[8]),(X[9],Y[9])]</code></p>
+<p>4，最后我们将结果整理成两个张量作为输出。</p>
+<p>拿到的结果是两个张量，类似<code>batch = (features,labels)</code>， </p>
+<p>其中 <code>features = torch.stack([X[1],X[4],X[8],X[9]])</code></p>
+<p><code>labels = torch.stack([Y[1],Y[4],Y[8],Y[9]])</code></p>
+<div class="highlight"><pre><span></span><code>
+</code></pre></div>
+
+<p><strong>2，Dataset和DataLoader的功能分工</strong></p>
+<p>上述第1个步骤确定数据集的长度是由 Dataset的<code>__len__</code> 方法实现的。</p>
+<p>第2个步骤从<code>0</code>到<code>n-1</code>的范围中抽样出<code>m</code>个数的方法是由 DataLoader的 <code>sampler</code>和 <code>batch_sampler</code>参数指定的。</p>
+<p><code>sampler</code>参数指定单个元素抽样方法，一般无需用户设置，程序默认在DataLoader的参数<code>shuffle=True</code>时采用随机抽样，<code>shuffle=False</code>时采用顺序抽样。</p>
+<p><code>batch_sampler</code>参数将多个抽样的元素整理成一个列表，一般无需用户设置，默认方法在DataLoader的参数<code>drop_last=True</code>时会丢弃数据集最后一个长度不能被batch大小整除的批次，在<code>drop_last=False</code>时保留最后一个批次。</p>
+<p>第3个步骤的核心逻辑根据下标取数据集中的元素 是由 Dataset的 <code>__getitem__</code>方法实现的。</p>
+<p>第4个步骤的逻辑由DataLoader的参数<code>collate_fn</code>指定。一般情况下也无需用户设置。</p>
+<div class="highlight"><pre><span></span><code>
+</code></pre></div>
+
+<p><strong>3，Dataset和DataLoader的主要接口</strong></p>
+<p>以下是 Dataset和 DataLoader的核心接口逻辑伪代码，不完全和源码一致。</p>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">torch</span> 
+<span class="k">class</span> <span class="nc">Dataset</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span>
+
+    <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">index</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+
+<span class="k">class</span> <span class="nc">DataLoader</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">dataset</span><span class="p">,</span><span class="n">batch_size</span><span class="p">,</span><span class="n">collate_fn</span><span class="p">,</span><span class="n">shuffle</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span><span class="n">drop_last</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dataset</span> <span class="o">=</span> <span class="n">dataset</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sampler</span> <span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">RandomSampler</span> <span class="k">if</span> <span class="n">shuffle</span> <span class="k">else</span> \
+           <span class="n">torch</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">SequentialSampler</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">batch_sampler</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">BatchSampler</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sample_iter</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch_sampler</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sampler</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">dataset</span><span class="p">))),</span>
+            <span class="n">batch_size</span> <span class="o">=</span> <span class="n">batch_size</span><span class="p">,</span><span class="n">drop_last</span> <span class="o">=</span> <span class="n">drop_last</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__next__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">indices</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sample_iter</span><span class="p">)</span>
+        <span class="n">batch</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">collate_fn</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">dataset</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">indices</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">batch</span>
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code>
+</code></pre></div>
+
+<h3 id="二使用dataset创建数据集">二，使用Dataset创建数据集<a class="headerlink" href="#二使用dataset创建数据集" title="Permanent link">#</a></h3>
+<!-- #region -->
+
+<p>Dataset创建数据集常用的方法有：</p>
+<ul>
+<li>
+<p>使用 torch.utils.data.TensorDataset 根据Tensor创建数据集(numpy的array，Pandas的DataFrame需要先转换成Tensor)。</p>
+</li>
+<li>
+<p>使用 torchvision.datasets.ImageFolder 根据图片目录创建图片数据集。</p>
+</li>
+<li>
+<p>继承 torch.utils.data.Dataset 创建自定义数据集。</p>
+</li>
+</ul>
+<p>此外，还可以通过</p>
+<ul>
+<li>
+<p>torch.utils.data.random_split 将一个数据集分割成多份，常用于分割训练集，验证集和测试集。</p>
+</li>
+<li>
+<p>调用Dataset的加法运算符(<code>+</code>)将多个数据集合并成一个数据集。<br />
+<!-- #endregion --></p>
+</li>
+</ul>
+<p><strong>1，根据Tensor创建数据集</strong></p>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span> 
+<span class="kn">import</span> <span class="nn">torch</span> 
+<span class="kn">from</span> <span class="nn">torch.utils.data</span> <span class="kn">import</span> <span class="n">TensorDataset</span><span class="p">,</span><span class="n">Dataset</span><span class="p">,</span><span class="n">DataLoader</span><span class="p">,</span><span class="n">random_split</span> 
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code><span class="c1"># 根据Tensor创建数据集</span>
+
+<span class="kn">from</span> <span class="nn">sklearn</span> <span class="kn">import</span> <span class="n">datasets</span> 
+<span class="n">iris</span> <span class="o">=</span> <span class="n">datasets</span><span class="o">.</span><span class="n">load_iris</span><span class="p">()</span>
+<span class="n">ds_iris</span> <span class="o">=</span> <span class="n">TensorDataset</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">iris</span><span class="o">.</span><span class="n">data</span><span class="p">),</span><span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">iris</span><span class="o">.</span><span class="n">target</span><span class="p">))</span>
+
+<span class="c1"># 分割成训练集和预测集</span>
+<span class="n">n_train</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ds_iris</span><span class="p">)</span><span class="o">*</span><span class="mf">0.8</span><span class="p">)</span>
+<span class="n">n_valid</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">ds_iris</span><span class="p">)</span> <span class="o">-</span> <span class="n">n_train</span>
+<span class="n">ds_train</span><span class="p">,</span><span class="n">ds_valid</span> <span class="o">=</span> <span class="n">random_split</span><span class="p">(</span><span class="n">ds_iris</span><span class="p">,[</span><span class="n">n_train</span><span class="p">,</span><span class="n">n_valid</span><span class="p">])</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">ds_iris</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">ds_train</span><span class="p">))</span>
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code><span class="c1"># 使用DataLoader加载数据集</span>
+<span class="n">dl_train</span><span class="p">,</span><span class="n">dl_valid</span> <span class="o">=</span> <span class="n">DataLoader</span><span class="p">(</span><span class="n">ds_train</span><span class="p">,</span><span class="n">batch_size</span> <span class="o">=</span> <span class="mi">8</span><span class="p">),</span><span class="n">DataLoader</span><span class="p">(</span><span class="n">ds_valid</span><span class="p">,</span><span class="n">batch_size</span> <span class="o">=</span> <span class="mi">8</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">features</span><span class="p">,</span><span class="n">labels</span> <span class="ow">in</span> <span class="n">dl_train</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">features</span><span class="p">,</span><span class="n">labels</span><span class="p">)</span>
+    <span class="k">break</span>
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code><span class="c1"># 演示加法运算符（`+`）的合并作用</span>
+
+<span class="n">ds_data</span> <span class="o">=</span> <span class="n">ds_train</span> <span class="o">+</span> <span class="n">ds_valid</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;len(ds_train) = &#39;</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">ds_train</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;len(ds_valid) = &#39;</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">ds_valid</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;len(ds_train+ds_valid) = &#39;</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">ds_data</span><span class="p">))</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">ds_data</span><span class="p">))</span>
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code>
+</code></pre></div>
+
+<p><strong>2，根据图片目录创建图片数据集</strong></p>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span> 
+<span class="kn">import</span> <span class="nn">torch</span> 
+<span class="kn">from</span> <span class="nn">torch.utils.data</span> <span class="kn">import</span> <span class="n">DataLoader</span>
+<span class="kn">from</span> <span class="nn">torchvision</span> <span class="kn">import</span> <span class="n">transforms</span><span class="p">,</span><span class="n">datasets</span> 
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code><span class="c1">#演示一些常用的图片增强操作</span>
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">PIL</span> <span class="kn">import</span> <span class="n">Image</span>
+<span class="n">img</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s1">&#39;../data/cat.jpeg&#39;</span><span class="p">)</span>
+<span class="n">img</span>
+</code></pre></div>
+
+<p><img alt="" src="../../data/5-1-%E5%82%BB%E4%B9%8E%E4%B9%8E.png" /></p>
+<div class="highlight"><pre><span></span><code><span class="c1"># 随机数值翻转</span>
+<span class="n">transforms</span><span class="o">.</span><span class="n">RandomVerticalFlip</span><span class="p">()(</span><span class="n">img</span><span class="p">)</span>
+</code></pre></div>
+
+<p><img alt="" src="../../data/5-1-%E7%BF%BB%E8%BD%AC.png" /></p>
+<div class="highlight"><pre><span></span><code><span class="c1">#随机旋转</span>
+<span class="n">transforms</span><span class="o">.</span><span class="n">RandomRotation</span><span class="p">(</span><span class="mi">45</span><span class="p">)(</span><span class="n">img</span><span class="p">)</span>
+</code></pre></div>
+
+<p><img alt="" src="../../data/5-1-%E6%97%8B%E8%BD%AC.png" /></p>
+<div class="highlight"><pre><span></span><code><span class="c1"># 定义图片增强操作</span>
+
+<span class="n">transform_train</span> <span class="o">=</span> <span class="n">transforms</span><span class="o">.</span><span class="n">Compose</span><span class="p">([</span>
+   <span class="n">transforms</span><span class="o">.</span><span class="n">RandomHorizontalFlip</span><span class="p">(),</span> <span class="c1">#随机水平翻转</span>
+   <span class="n">transforms</span><span class="o">.</span><span class="n">RandomVerticalFlip</span><span class="p">(),</span> <span class="c1">#随机垂直翻转</span>
+   <span class="n">transforms</span><span class="o">.</span><span class="n">RandomRotation</span><span class="p">(</span><span class="mi">45</span><span class="p">),</span>  <span class="c1">#随机在45度角度内旋转</span>
+   <span class="n">transforms</span><span class="o">.</span><span class="n">ToTensor</span><span class="p">()</span> <span class="c1">#转换成张量</span>
+  <span class="p">]</span>
+<span class="p">)</span> 
+
+<span class="n">transform_valid</span> <span class="o">=</span> <span class="n">transforms</span><span class="o">.</span><span class="n">Compose</span><span class="p">([</span>
+    <span class="n">transforms</span><span class="o">.</span><span class="n">ToTensor</span><span class="p">()</span>
+  <span class="p">]</span>
+<span class="p">)</span>
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code><span class="c1"># 根据图片目录创建数据集</span>
+<span class="n">ds_train</span> <span class="o">=</span> <span class="n">datasets</span><span class="o">.</span><span class="n">ImageFolder</span><span class="p">(</span><span class="s2">&quot;../data/cifar2/train/&quot;</span><span class="p">,</span>
+            <span class="n">transform</span> <span class="o">=</span> <span class="n">transform_train</span><span class="p">,</span><span class="n">target_transform</span><span class="o">=</span> <span class="k">lambda</span> <span class="n">t</span><span class="p">:</span><span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="n">t</span><span class="p">])</span><span class="o">.</span><span class="n">float</span><span class="p">())</span>
+<span class="n">ds_valid</span> <span class="o">=</span> <span class="n">datasets</span><span class="o">.</span><span class="n">ImageFolder</span><span class="p">(</span><span class="s2">&quot;../data/cifar2/test/&quot;</span><span class="p">,</span>
+            <span class="n">transform</span> <span class="o">=</span> <span class="n">transform_train</span><span class="p">,</span><span class="n">target_transform</span><span class="o">=</span> <span class="k">lambda</span> <span class="n">t</span><span class="p">:</span><span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="n">t</span><span class="p">])</span><span class="o">.</span><span class="n">float</span><span class="p">())</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">ds_train</span><span class="o">.</span><span class="n">class_to_idx</span><span class="p">)</span>
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code>{&#39;0_airplane&#39;: 0, &#39;1_automobile&#39;: 1}
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code><span class="c1"># 使用DataLoader加载数据集</span>
+
+<span class="n">dl_train</span> <span class="o">=</span> <span class="n">DataLoader</span><span class="p">(</span><span class="n">ds_train</span><span class="p">,</span><span class="n">batch_size</span> <span class="o">=</span> <span class="mi">50</span><span class="p">,</span><span class="n">shuffle</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span><span class="n">num_workers</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">dl_valid</span> <span class="o">=</span> <span class="n">DataLoader</span><span class="p">(</span><span class="n">ds_valid</span><span class="p">,</span><span class="n">batch_size</span> <span class="o">=</span> <span class="mi">50</span><span class="p">,</span><span class="n">shuffle</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span><span class="n">num_workers</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code><span class="k">for</span> <span class="n">features</span><span class="p">,</span><span class="n">labels</span> <span class="ow">in</span> <span class="n">dl_train</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">features</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">labels</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+    <span class="k">break</span>
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code>torch.Size([50, 3, 32, 32])
+torch.Size([50, 1])
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code>
+</code></pre></div>
+
+<p><strong>3，创建自定义数据集</strong></p>
+<p>下面通过继承Dataset类创建imdb文本分类任务的自定义数据集。</p>
+<p>大概思路如下：首先，对训练集文本分词构建词典。然后将训练集文本和测试集文本数据转换成token单词编码。</p>
+<p>接着将转换成单词编码的训练集数据和测试集数据按样本分割成多个文件，一个文件代表一个样本。</p>
+<p>最后，我们可以根据文件名列表获取对应序号的样本内容，从而构建Dataset数据集。</p>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span> 
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span> 
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">OrderedDict</span>
+<span class="kn">import</span> <span class="nn">re</span><span class="o">,</span><span class="nn">string</span>
+
+<span class="n">MAX_WORDS</span> <span class="o">=</span> <span class="mi">10000</span>  <span class="c1"># 仅考虑最高频的10000个词</span>
+<span class="n">MAX_LEN</span> <span class="o">=</span> <span class="mi">200</span>  <span class="c1"># 每个样本保留200个词的长度</span>
+<span class="n">BATCH_SIZE</span> <span class="o">=</span> <span class="mi">20</span> 
+
+<span class="n">train_data_path</span> <span class="o">=</span> <span class="s1">&#39;data/imdb/train.tsv&#39;</span>
+<span class="n">test_data_path</span> <span class="o">=</span> <span class="s1">&#39;data/imdb/test.tsv&#39;</span>
+<span class="n">train_token_path</span> <span class="o">=</span> <span class="s1">&#39;data/imdb/train_token.tsv&#39;</span>
+<span class="n">test_token_path</span> <span class="o">=</span>  <span class="s1">&#39;data/imdb/test_token.tsv&#39;</span>
+<span class="n">train_samples_path</span> <span class="o">=</span> <span class="s1">&#39;data/imdb/train_samples/&#39;</span>
+<span class="n">test_samples_path</span> <span class="o">=</span>  <span class="s1">&#39;data/imdb/test_samples/&#39;</span>
+</code></pre></div>
+
+<p>首先我们构建词典，并保留最高频的MAX_WORDS个词。</p>
+<div class="highlight"><pre><span></span><code><span class="c1">##构建词典</span>
+
+<span class="n">word_count_dict</span> <span class="o">=</span> <span class="p">{}</span>
+
+<span class="c1">#清洗文本</span>
+<span class="k">def</span> <span class="nf">clean_text</span><span class="p">(</span><span class="n">text</span><span class="p">):</span>
+    <span class="n">lowercase</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span><span class="s2">&quot; &quot;</span><span class="p">)</span>
+    <span class="n">stripped_html</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s1">&#39;&lt;br /&gt;&#39;</span><span class="p">,</span> <span class="s1">&#39; &#39;</span><span class="p">,</span><span class="n">lowercase</span><span class="p">)</span>
+    <span class="n">cleaned_punctuation</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s1">&#39;[</span><span class="si">%s</span><span class="s1">]&#39;</span><span class="o">%</span><span class="n">re</span><span class="o">.</span><span class="n">escape</span><span class="p">(</span><span class="n">string</span><span class="o">.</span><span class="n">punctuation</span><span class="p">),</span><span class="s1">&#39;&#39;</span><span class="p">,</span><span class="n">stripped_html</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">cleaned_punctuation</span>
+
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">train_data_path</span><span class="p">,</span><span class="s2">&quot;r&quot;</span><span class="p">,</span><span class="n">encoding</span> <span class="o">=</span> <span class="s1">&#39;utf-8&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">label</span><span class="p">,</span><span class="n">text</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">cleaned_text</span> <span class="o">=</span> <span class="n">clean_text</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">word</span> <span class="ow">in</span> <span class="n">cleaned_text</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">):</span>
+            <span class="n">word_count_dict</span><span class="p">[</span><span class="n">word</span><span class="p">]</span> <span class="o">=</span> <span class="n">word_count_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">word</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span> 
+
+<span class="n">df_word_dict</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">word_count_dict</span><span class="p">,</span><span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;count&quot;</span><span class="p">))</span>
+<span class="n">df_word_dict</span> <span class="o">=</span> <span class="n">df_word_dict</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">by</span> <span class="o">=</span> <span class="s2">&quot;count&quot;</span><span class="p">,</span><span class="n">ascending</span> <span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<span class="n">df_word_dict</span> <span class="o">=</span> <span class="n">df_word_dict</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">MAX_WORDS</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span> <span class="c1">#  </span>
+<span class="n">df_word_dict</span><span class="p">[</span><span class="s2">&quot;word_id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="n">MAX_WORDS</span><span class="p">)</span> <span class="c1">#编号0和1分别留给未知词&lt;unkown&gt;和填充&lt;padding&gt;</span>
+
+<span class="n">word_id_dict</span> <span class="o">=</span> <span class="n">df_word_dict</span><span class="p">[</span><span class="s2">&quot;word_id&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
+
+<span class="n">df_word_dict</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+</code></pre></div>
+
+<p><img alt="" src="../../data/5-1-%E8%AF%8D%E5%85%B8.png" /></p>
+<p>然后我们利用构建好的词典，将文本转换成token序号。</p>
+<div class="highlight"><pre><span></span><code><span class="c1">#转换token</span>
+
+<span class="c1"># 填充文本</span>
+<span class="k">def</span> <span class="nf">pad</span><span class="p">(</span><span class="n">data_list</span><span class="p">,</span><span class="n">pad_length</span><span class="p">):</span>
+    <span class="n">padded_list</span> <span class="o">=</span> <span class="n">data_list</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">data_list</span><span class="p">)</span><span class="o">&gt;</span> <span class="n">pad_length</span><span class="p">:</span>
+         <span class="n">padded_list</span> <span class="o">=</span> <span class="n">data_list</span><span class="p">[</span><span class="o">-</span><span class="n">pad_length</span><span class="p">:]</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">data_list</span><span class="p">)</span><span class="o">&lt;</span> <span class="n">pad_length</span><span class="p">:</span>
+         <span class="n">padded_list</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="p">(</span><span class="n">pad_length</span><span class="o">-</span><span class="nb">len</span><span class="p">(</span><span class="n">data_list</span><span class="p">))</span><span class="o">+</span><span class="n">data_list</span>
+    <span class="k">return</span> <span class="n">padded_list</span>
+
+<span class="k">def</span> <span class="nf">text_to_token</span><span class="p">(</span><span class="n">text_file</span><span class="p">,</span><span class="n">token_file</span><span class="p">):</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">text_file</span><span class="p">,</span><span class="s2">&quot;r&quot;</span><span class="p">,</span><span class="n">encoding</span> <span class="o">=</span> <span class="s1">&#39;utf-8&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fin</span><span class="p">,</span>\
+      <span class="nb">open</span><span class="p">(</span><span class="n">token_file</span><span class="p">,</span><span class="s2">&quot;w&quot;</span><span class="p">,</span><span class="n">encoding</span> <span class="o">=</span> <span class="s1">&#39;utf-8&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fout</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">fin</span><span class="p">:</span>
+            <span class="n">label</span><span class="p">,</span><span class="n">text</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">cleaned_text</span> <span class="o">=</span> <span class="n">clean_text</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+            <span class="n">word_token_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">word_id_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">word</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="k">for</span> <span class="n">word</span> <span class="ow">in</span> <span class="n">cleaned_text</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">)]</span>
+            <span class="n">pad_list</span> <span class="o">=</span> <span class="n">pad</span><span class="p">(</span><span class="n">word_token_list</span><span class="p">,</span><span class="n">MAX_LEN</span><span class="p">)</span>
+            <span class="n">out_line</span> <span class="o">=</span> <span class="n">label</span><span class="o">+</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="o">+</span><span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">pad_list</span><span class="p">])</span>
+            <span class="n">fout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">out_line</span><span class="o">+</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="n">text_to_token</span><span class="p">(</span><span class="n">train_data_path</span><span class="p">,</span><span class="n">train_token_path</span><span class="p">)</span>
+<span class="n">text_to_token</span><span class="p">(</span><span class="n">test_data_path</span><span class="p">,</span><span class="n">test_token_path</span><span class="p">)</span>
+</code></pre></div>
+
+<p>接着将token文本按照样本分割，每个文件存放一个样本的数据。</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># 分割样本</span>
+<span class="kn">import</span> <span class="nn">os</span>
+
+<span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">train_samples_path</span><span class="p">):</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">train_samples_path</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">test_samples_path</span><span class="p">):</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">test_samples_path</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">split_samples</span><span class="p">(</span><span class="n">token_path</span><span class="p">,</span><span class="n">samples_dir</span><span class="p">):</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">token_path</span><span class="p">,</span><span class="s2">&quot;r&quot;</span><span class="p">,</span><span class="n">encoding</span> <span class="o">=</span> <span class="s1">&#39;utf-8&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fin</span><span class="p">:</span>
+        <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">fin</span><span class="p">:</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">samples_dir</span><span class="o">+</span><span class="s2">&quot;</span><span class="si">%d</span><span class="s2">.txt&quot;</span><span class="o">%</span><span class="n">i</span><span class="p">,</span><span class="s2">&quot;w&quot;</span><span class="p">,</span><span class="n">encoding</span> <span class="o">=</span> <span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fout</span><span class="p">:</span>
+                <span class="n">fout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+            <span class="n">i</span> <span class="o">=</span> <span class="n">i</span><span class="o">+</span><span class="mi">1</span>
+
+<span class="n">split_samples</span><span class="p">(</span><span class="n">train_token_path</span><span class="p">,</span><span class="n">train_samples_path</span><span class="p">)</span>
+<span class="n">split_samples</span><span class="p">(</span><span class="n">test_token_path</span><span class="p">,</span><span class="n">test_samples_path</span><span class="p">)</span>
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code><span class="nb">print</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">train_samples_path</span><span class="p">)[</span><span class="mi">0</span><span class="p">:</span><span class="mi">100</span><span class="p">])</span>
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code>[&#39;11303.txt&#39;, &#39;3644.txt&#39;, &#39;19987.txt&#39;, &#39;18441.txt&#39;, &#39;5235.txt&#39;, &#39;17772.txt&#39;, &#39;1053.txt&#39;, &#39;13514.txt&#39;, &#39;8711.txt&#39;, &#39;15165.txt&#39;, &#39;7422.txt&#39;, &#39;8077.txt&#39;, &#39;15603.txt&#39;, &#39;7344.txt&#39;, &#39;1735.txt&#39;, &#39;13272.txt&#39;, &#39;9369.txt&#39;, &#39;18327.txt&#39;, &#39;5553.txt&#39;, &#39;17014.txt&#39;, &#39;4895.txt&#39;, &#39;11465.txt&#39;, &#39;3122.txt&#39;, &#39;19039.txt&#39;, &#39;5547.txt&#39;, &#39;18333.txt&#39;, &#39;17000.txt&#39;, &#39;4881.txt&#39;, &#39;2228.txt&#39;, &#39;11471.txt&#39;, &#39;3136.txt&#39;, &#39;4659.txt&#39;, &#39;15617.txt&#39;, &#39;8063.txt&#39;, &#39;7350.txt&#39;, &#39;12178.txt&#39;, &#39;1721.txt&#39;, &#39;13266.txt&#39;, &#39;14509.txt&#39;, &#39;6728.txt&#39;, &#39;1047.txt&#39;, &#39;13500.txt&#39;, &#39;15171.txt&#39;, &#39;8705.txt&#39;, &#39;7436.txt&#39;, &#39;16478.txt&#39;, &#39;11317.txt&#39;, &#39;3650.txt&#39;, &#39;19993.txt&#39;, &#39;10009.txt&#39;, &#39;5221.txt&#39;, &#39;18455.txt&#39;, &#39;17766.txt&#39;, &#39;3888.txt&#39;, &#39;6700.txt&#39;, &#39;14247.txt&#39;, &#39;9433.txt&#39;, &#39;13528.txt&#39;, &#39;12636.txt&#39;, &#39;15159.txt&#39;, &#39;16450.txt&#39;, &#39;4117.txt&#39;, &#39;19763.txt&#39;, &#39;3678.txt&#39;, &#39;17996.txt&#39;, &#39;2566.txt&#39;, &#39;10021.txt&#39;, &#39;5209.txt&#39;, &#39;17028.txt&#39;, &#39;2200.txt&#39;, &#39;10747.txt&#39;, &#39;11459.txt&#39;, &#39;16336.txt&#39;, &#39;4671.txt&#39;, &#39;19005.txt&#39;, &#39;7378.txt&#39;, &#39;12150.txt&#39;, &#39;1709.txt&#39;, &#39;6066.txt&#39;, &#39;14521.txt&#39;, &#39;9355.txt&#39;, &#39;12144.txt&#39;, &#39;289.txt&#39;, &#39;6072.txt&#39;, &#39;9341.txt&#39;, &#39;14535.txt&#39;, &#39;2214.txt&#39;, &#39;10753.txt&#39;, &#39;16322.txt&#39;, &#39;19011.txt&#39;, &#39;4665.txt&#39;, &#39;16444.txt&#39;, &#39;19777.txt&#39;, &#39;4103.txt&#39;, &#39;17982.txt&#39;, &#39;2572.txt&#39;, &#39;10035.txt&#39;, &#39;18469.txt&#39;, &#39;6714.txt&#39;, &#39;9427.txt&#39;]
+</code></pre></div>
+
+<p>一切准备就绪，我们可以创建数据集Dataset, 从文件名称列表中读取文件内容了。</p>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">os</span>
+<span class="k">class</span> <span class="nc">imdbDataset</span><span class="p">(</span><span class="n">Dataset</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">samples_dir</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">samples_dir</span> <span class="o">=</span> <span class="n">samples_dir</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">samples_paths</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">samples_dir</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">samples_paths</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">index</span><span class="p">):</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">samples_dir</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">samples_paths</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span><span class="s2">&quot;r&quot;</span><span class="p">,</span><span class="n">encoding</span> <span class="o">=</span> <span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">line</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+            <span class="n">label</span><span class="p">,</span><span class="n">tokens</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">label</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="nb">float</span><span class="p">(</span><span class="n">label</span><span class="p">)],</span><span class="n">dtype</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">float</span><span class="p">)</span>
+            <span class="n">feature</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">tokens</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">)],</span><span class="n">dtype</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">long</span><span class="p">)</span>
+            <span class="k">return</span>  <span class="p">(</span><span class="n">feature</span><span class="p">,</span><span class="n">label</span><span class="p">)</span>
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code><span class="n">ds_train</span> <span class="o">=</span> <span class="n">imdbDataset</span><span class="p">(</span><span class="n">train_samples_path</span><span class="p">)</span>
+<span class="n">ds_test</span> <span class="o">=</span> <span class="n">imdbDataset</span><span class="p">(</span><span class="n">test_samples_path</span><span class="p">)</span>
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code><span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ds_train</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ds_test</span><span class="p">))</span>
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code>20000
+5000
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code><span class="n">dl_train</span> <span class="o">=</span> <span class="n">DataLoader</span><span class="p">(</span><span class="n">ds_train</span><span class="p">,</span><span class="n">batch_size</span> <span class="o">=</span> <span class="n">BATCH_SIZE</span><span class="p">,</span><span class="n">shuffle</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span><span class="n">num_workers</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+<span class="n">dl_test</span> <span class="o">=</span> <span class="n">DataLoader</span><span class="p">(</span><span class="n">ds_test</span><span class="p">,</span><span class="n">batch_size</span> <span class="o">=</span> <span class="n">BATCH_SIZE</span><span class="p">,</span><span class="n">num_workers</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">features</span><span class="p">,</span><span class="n">labels</span> <span class="ow">in</span> <span class="n">dl_train</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">features</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span>
+    <span class="k">break</span>
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code>tensor([[   1,    1,    1,  ...,   29,    8,    8],
+        [  13,   11,  247,  ...,    0,    0,    8],
+        [8587,  555,   12,  ...,    3,    0,    8],
+        ...,
+        [   1,    1,    1,  ...,    2,    0,    8],
+        [ 618,   62,   25,  ...,   20,  204,    8],
+        [   1,    1,    1,  ...,   71,   85,    8]])
+tensor([[1.],
+        [0.],
+        [0.],
+        [1.],
+        [0.],
+        [1.],
+        [0.],
+        [1.],
+        [1.],
+        [1.],
+        [0.],
+        [0.],
+        [0.],
+        [1.],
+        [0.],
+        [1.],
+        [1.],
+        [1.],
+        [0.],
+        [1.]])
+</code></pre></div>
+
+<p>最后构建模型测试一下数据集管道是否可用。</p>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">from</span> <span class="nn">torch</span> <span class="kn">import</span> <span class="n">nn</span> 
+<span class="kn">import</span> <span class="nn">importlib</span> 
+<span class="kn">from</span> <span class="nn">torchkeras</span> <span class="kn">import</span> <span class="n">Model</span><span class="p">,</span><span class="n">summary</span>
+
+<span class="k">class</span> <span class="nc">Net</span><span class="p">(</span><span class="n">Model</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">Net</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+        <span class="c1">#设置padding_idx参数后将在训练过程中将填充的token始终赋值为0向量</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">embedding</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Embedding</span><span class="p">(</span><span class="n">num_embeddings</span> <span class="o">=</span> <span class="n">MAX_WORDS</span><span class="p">,</span><span class="n">embedding_dim</span> <span class="o">=</span> <span class="mi">3</span><span class="p">,</span><span class="n">padding_idx</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">conv</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">conv</span><span class="o">.</span><span class="n">add_module</span><span class="p">(</span><span class="s2">&quot;conv_1&quot;</span><span class="p">,</span><span class="n">nn</span><span class="o">.</span><span class="n">Conv1d</span><span class="p">(</span><span class="n">in_channels</span> <span class="o">=</span> <span class="mi">3</span><span class="p">,</span><span class="n">out_channels</span> <span class="o">=</span> <span class="mi">16</span><span class="p">,</span><span class="n">kernel_size</span> <span class="o">=</span> <span class="mi">5</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">conv</span><span class="o">.</span><span class="n">add_module</span><span class="p">(</span><span class="s2">&quot;pool_1&quot;</span><span class="p">,</span><span class="n">nn</span><span class="o">.</span><span class="n">MaxPool1d</span><span class="p">(</span><span class="n">kernel_size</span> <span class="o">=</span> <span class="mi">2</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">conv</span><span class="o">.</span><span class="n">add_module</span><span class="p">(</span><span class="s2">&quot;relu_1&quot;</span><span class="p">,</span><span class="n">nn</span><span class="o">.</span><span class="n">ReLU</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">conv</span><span class="o">.</span><span class="n">add_module</span><span class="p">(</span><span class="s2">&quot;conv_2&quot;</span><span class="p">,</span><span class="n">nn</span><span class="o">.</span><span class="n">Conv1d</span><span class="p">(</span><span class="n">in_channels</span> <span class="o">=</span> <span class="mi">16</span><span class="p">,</span><span class="n">out_channels</span> <span class="o">=</span> <span class="mi">128</span><span class="p">,</span><span class="n">kernel_size</span> <span class="o">=</span> <span class="mi">2</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">conv</span><span class="o">.</span><span class="n">add_module</span><span class="p">(</span><span class="s2">&quot;pool_2&quot;</span><span class="p">,</span><span class="n">nn</span><span class="o">.</span><span class="n">MaxPool1d</span><span class="p">(</span><span class="n">kernel_size</span> <span class="o">=</span> <span class="mi">2</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">conv</span><span class="o">.</span><span class="n">add_module</span><span class="p">(</span><span class="s2">&quot;relu_2&quot;</span><span class="p">,</span><span class="n">nn</span><span class="o">.</span><span class="n">ReLU</span><span class="p">())</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">dense</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dense</span><span class="o">.</span><span class="n">add_module</span><span class="p">(</span><span class="s2">&quot;flatten&quot;</span><span class="p">,</span><span class="n">nn</span><span class="o">.</span><span class="n">Flatten</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dense</span><span class="o">.</span><span class="n">add_module</span><span class="p">(</span><span class="s2">&quot;linear&quot;</span><span class="p">,</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="mi">6144</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dense</span><span class="o">.</span><span class="n">add_module</span><span class="p">(</span><span class="s2">&quot;sigmoid&quot;</span><span class="p">,</span><span class="n">nn</span><span class="o">.</span><span class="n">Sigmoid</span><span class="p">())</span>
+
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">x</span><span class="p">):</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">embedding</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">conv</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dense</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">y</span>
+
+<span class="n">model</span> <span class="o">=</span> <span class="n">Net</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+
+<span class="n">model</span><span class="o">.</span><span class="n">summary</span><span class="p">(</span><span class="n">input_shape</span> <span class="o">=</span> <span class="p">(</span><span class="mi">200</span><span class="p">,),</span><span class="n">input_dtype</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">LongTensor</span><span class="p">)</span>
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code>Net(
+  (embedding): Embedding(10000, 3, padding_idx=1)
+  (conv): Sequential(
+    (conv_1): Conv1d(3, 16, kernel_size=(5,), stride=(1,))
+    (pool_1): MaxPool1d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
+    (relu_1): ReLU()
+    (conv_2): Conv1d(16, 128, kernel_size=(2,), stride=(1,))
+    (pool_2): MaxPool1d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
+    (relu_2): ReLU()
+  )
+  (dense): Sequential(
+    (flatten): Flatten()
+    (linear): Linear(in_features=6144, out_features=1, bias=True)
+    (sigmoid): Sigmoid()
+  )
+)
+----------------------------------------------------------------
+        Layer (type)               Output Shape         Param #
+================================================================
+         Embedding-1               [-1, 200, 3]          30,000
+            Conv1d-2              [-1, 16, 196]             256
+         MaxPool1d-3               [-1, 16, 98]               0
+              ReLU-4               [-1, 16, 98]               0
+            Conv1d-5              [-1, 128, 97]           4,224
+         MaxPool1d-6              [-1, 128, 48]               0
+              ReLU-7              [-1, 128, 48]               0
+           Flatten-8                 [-1, 6144]               0
+            Linear-9                    [-1, 1]           6,145
+          Sigmoid-10                    [-1, 1]               0
+================================================================
+Total params: 40,625
+Trainable params: 40,625
+Non-trainable params: 0
+----------------------------------------------------------------
+Input size (MB): 0.000763
+Forward/backward pass size (MB): 0.287796
+Params size (MB): 0.154972
+Estimated Total Size (MB): 0.443531
+----------------------------------------------------------------
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code><span class="c1"># 编译模型</span>
+<span class="k">def</span> <span class="nf">accuracy</span><span class="p">(</span><span class="n">y_pred</span><span class="p">,</span><span class="n">y_true</span><span class="p">):</span>
+    <span class="n">y_pred</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">y_pred</span><span class="o">&gt;</span><span class="mf">0.5</span><span class="p">,</span><span class="n">torch</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">y_pred</span><span class="p">,</span><span class="n">dtype</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">float32</span><span class="p">),</span>
+                      <span class="n">torch</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">y_pred</span><span class="p">,</span><span class="n">dtype</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">float32</span><span class="p">))</span>
+    <span class="n">acc</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">torch</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">y_true</span><span class="o">-</span><span class="n">y_pred</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">acc</span>
+
+<span class="n">model</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">loss_func</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">BCELoss</span><span class="p">(),</span><span class="n">optimizer</span><span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">Adagrad</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span><span class="n">lr</span> <span class="o">=</span> <span class="mf">0.02</span><span class="p">),</span>
+             <span class="n">metrics_dict</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;accuracy&quot;</span><span class="p">:</span><span class="n">accuracy</span><span class="p">})</span>
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code><span class="c1"># 训练模型</span>
+<span class="n">dfhistory</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="n">dl_train</span><span class="p">,</span><span class="n">dl_val</span><span class="o">=</span><span class="n">dl_test</span><span class="p">,</span><span class="n">log_step_freq</span><span class="o">=</span> <span class="mi">200</span><span class="p">)</span>
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code>Start Training ...
+
+================================================================================2020-07-11 23:21:53
+{&#39;step&#39;: 200, &#39;loss&#39;: 0.956, &#39;accuracy&#39;: 0.521}
+{&#39;step&#39;: 400, &#39;loss&#39;: 0.823, &#39;accuracy&#39;: 0.53}
+{&#39;step&#39;: 600, &#39;loss&#39;: 0.774, &#39;accuracy&#39;: 0.545}
+{&#39;step&#39;: 800, &#39;loss&#39;: 0.747, &#39;accuracy&#39;: 0.56}
+{&#39;step&#39;: 1000, &#39;loss&#39;: 0.726, &#39;accuracy&#39;: 0.572}
+
+ +-------+-------+----------+----------+--------------+
+| epoch |  loss | accuracy | val_loss | val_accuracy |
++-------+-------+----------+----------+--------------+
+|   1   | 0.726 |  0.572   |  0.661   |    0.613     |
++-------+-------+----------+----------+--------------+
+
+================================================================================2020-07-11 23:22:20
+{&#39;step&#39;: 200, &#39;loss&#39;: 0.605, &#39;accuracy&#39;: 0.668}
+{&#39;step&#39;: 400, &#39;loss&#39;: 0.602, &#39;accuracy&#39;: 0.674}
+{&#39;step&#39;: 600, &#39;loss&#39;: 0.592, &#39;accuracy&#39;: 0.681}
+{&#39;step&#39;: 800, &#39;loss&#39;: 0.584, &#39;accuracy&#39;: 0.687}
+{&#39;step&#39;: 1000, &#39;loss&#39;: 0.575, &#39;accuracy&#39;: 0.696}
+
+ +-------+-------+----------+----------+--------------+
+| epoch |  loss | accuracy | val_loss | val_accuracy |
++-------+-------+----------+----------+--------------+
+|   2   | 0.575 |  0.696   |  0.553   |    0.716     |
++-------+-------+----------+----------+--------------+
+
+================================================================================2020-07-11 23:25:53
+{&#39;step&#39;: 200, &#39;loss&#39;: 0.294, &#39;accuracy&#39;: 0.877}
+{&#39;step&#39;: 400, &#39;loss&#39;: 0.299, &#39;accuracy&#39;: 0.875}
+{&#39;step&#39;: 600, &#39;loss&#39;: 0.298, &#39;accuracy&#39;: 0.875}
+{&#39;step&#39;: 800, &#39;loss&#39;: 0.296, &#39;accuracy&#39;: 0.876}
+{&#39;step&#39;: 1000, &#39;loss&#39;: 0.298, &#39;accuracy&#39;: 0.875}
+
+ +-------+-------+----------+----------+--------------+
+| epoch |  loss | accuracy | val_loss | val_accuracy |
++-------+-------+----------+----------+--------------+
+|   10  | 0.298 |  0.875   |  0.464   |    0.795     |
++-------+-------+----------+----------+--------------+
+
+================================================================================2020-07-11 23:26:19
+Finished Training...
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code>
+</code></pre></div>
+
+<h3 id="三使用dataloader加载数据集">三，使用DataLoader加载数据集<a class="headerlink" href="#三使用dataloader加载数据集" title="Permanent link">#</a></h3>
+<p>DataLoader能够控制batch的大小，batch中元素的采样方法，以及将batch结果整理成模型所需输入形式的方法，并且能够使用多进程读取数据。</p>
+<p>DataLoader的函数签名如下。</p>
+<!-- #region -->
+
+<div class="highlight"><pre><span></span><code><span class="n">DataLoader</span><span class="p">(</span>
+    <span class="n">dataset</span><span class="p">,</span>
+    <span class="n">batch_size</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+    <span class="n">shuffle</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">sampler</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">batch_sampler</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">num_workers</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+    <span class="n">collate_fn</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">pin_memory</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">drop_last</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">timeout</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+    <span class="n">worker_init_fn</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">multiprocessing_context</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span>
+</code></pre></div>
+
+<!-- #endregion -->
+
+<p>一般情况下，我们仅仅会配置 dataset, batch_size, shuffle, num_workers, drop_last这五个参数，其他参数使用默认值即可。</p>
+<p>DataLoader除了可以加载我们前面讲的 torch.utils.data.Dataset 外，还能够加载另外一种数据集 torch.utils.data.IterableDataset。</p>
+<p>和Dataset数据集相当于一种列表结构不同，IterableDataset相当于一种迭代器结构。 它更加复杂，一般较少使用。</p>
+<ul>
+<li>dataset : 数据集</li>
+<li>batch_size: 批次大小</li>
+<li>shuffle: 是否乱序</li>
+<li>sampler: 样本采样函数，一般无需设置。</li>
+<li>batch_sampler: 批次采样函数，一般无需设置。</li>
+<li>num_workers: 使用多进程读取数据，设置的进程数。</li>
+<li>collate_fn: 整理一个批次数据的函数。</li>
+<li>pin_memory: 是否设置为锁业内存。默认为False，锁业内存不会使用虚拟内存(硬盘)，从锁业内存拷贝到GPU上速度会更快。</li>
+<li>drop_last: 是否丢弃最后一个样本数量不足batch_size批次数据。</li>
+<li>timeout: 加载一个数据批次的最长等待时间，一般无需设置。</li>
+<li>worker_init_fn: 每个worker中dataset的初始化函数，常用于 IterableDataset。一般不使用。</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="c1">#构建输入数据管道</span>
+<span class="n">ds</span> <span class="o">=</span> <span class="n">TensorDataset</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">50</span><span class="p">))</span>
+<span class="n">dl</span> <span class="o">=</span> <span class="n">DataLoader</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span>
+                <span class="n">batch_size</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
+                <span class="n">shuffle</span><span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+                <span class="n">num_workers</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+                <span class="n">drop_last</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
+<span class="c1">#迭代数据</span>
+<span class="k">for</span> <span class="n">batch</span><span class="p">,</span> <span class="ow">in</span> <span class="n">dl</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">batch</span><span class="p">)</span>
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code>tensor([43, 44, 21, 36,  9,  5, 28, 16, 20, 14])
+tensor([23, 49, 35, 38,  2, 34, 45, 18, 15, 40])
+tensor([26,  6, 27, 39,  8,  4, 24, 19, 32, 17])
+tensor([ 1, 29, 11, 47, 12, 22, 48, 42, 10,  7])
+</code></pre></div>
+
+<p>如果对本书内容理解上有需要进一步和作者交流的地方，欢迎在公众号"Python与算法之美"下留言。作者时间和精力有限，会酌情予以回复。</p>
+<p>也可以在公众号后台回复关键字：<strong>加群</strong>，加入读者交流群和大家讨论。</p>
+<p><img alt="image.png" src="../../data/Python%E4%B8%8E%E7%AE%97%E6%B3%95%E4%B9%8B%E7%BE%8Elogo.jpg" /></p>
+<div class="highlight"><pre><span></span><code>
+</code></pre></div>
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+      </main>
+      
+        
+<footer class="md-footer">
+  
+    <div class="md-footer-nav">
+      <nav class="md-footer-nav__inner md-grid" aria-label="Footer">
+        
+          <a href="../" title="五、Pytorch的中阶API" class="md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+            <div class="md-footer-nav__button md-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+            </div>
+            <div class="md-footer-nav__title">
+              <div class="md-ellipsis">
+                <span class="md-footer-nav__direction">
+                  上一页
+                </span>
+                五、Pytorch的中阶API
+              </div>
+            </div>
+          </a>
+        
+        
+          <a href="../5-2%2C%E6%A8%A1%E5%9E%8B%E5%B1%82/" title="5-2,模型层layers" class="md-footer-nav__link md-footer-nav__link--next" rel="next">
+            <div class="md-footer-nav__title">
+              <div class="md-ellipsis">
+                <span class="md-footer-nav__direction">
+                  下一页
+                </span>
+                5-2,模型层layers
+              </div>
+            </div>
+            <div class="md-footer-nav__button md-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    </div>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+        Made with
+        <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+          Material for MkDocs
+        </a>
+      </div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    
+      <script src="../../assets/javascripts/vendor.2d1db4bd.min.js"></script>
+      <script src="../../assets/javascripts/bundle.6627ddf3.min.js"></script><script id="__lang" type="application/json">{"clipboard.copy": "\u590d\u5236", "clipboard.copied": "\u5df2\u590d\u5236", "search.config.lang": "ja", "search.config.pipeline": "trimmer, stemmer", "search.config.separator": "[\\uff0c\\u3002]+", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c"}</script>
+      
+      <script>
+        app = initialize({
+          base: "../..",
+          features: ['navigation.expand'],
+          search: Object.assign({
+            worker: "../../assets/javascripts/worker/search.5eca75d3.min.js"
+          }, typeof search !== "undefined" && search)
+        })
+      </script>
+      
+    
+  </body>
+</html>
